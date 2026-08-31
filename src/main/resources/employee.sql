@@ -1,5 +1,5 @@
-INSERT INTO employee (name, email, password, department) VALUES
-    ('Phobos','phobos@gmail.com','111','salle'),
-    ('Moon','phobos@gmail.com','222','salle'),
-    ('Deimos','deimos@gmail.com','333','security'),
-    ('Europa','europa@gmail.com','444','security');
+INSERT INTO users (user_type, first_name, last_name, middle_name, email, password, birthday, role, enabled, department, created_at) VALUES
+                                                                                                                                        ('EMPLOYEE', 'Phobos', 'Employee', NULL, 'phobos@gmail.com', '$2b$10$mLBvS/c6VJy/vJwUAuJhi.gWZFa4Lz.EGps65f0on6h0ri8M7Erba', '1991-04-10', 'ROLE_EMPLOYEE', true, 'salle', '2026-06-01 10:00:00'),
+                                                                                                                                        ('EMPLOYEE', 'Moon',   'Employee', NULL, 'moon@gmail.com',   '$2b$10$mLBvS/c6VJy/vJwUAuJhi.gWZFa4Lz.EGps65f0on6h0ri8M7Erba', '1993-08-21', 'ROLE_ADMIN', true, 'salle', '2026-06-01 10:00:00'),
+                                                                                                                                        ('EMPLOYEE', 'Deimos', 'Employee', NULL, 'deimos@gmail.com', '$2b$10$mLBvS/c6VJy/vJwUAuJhi.gWZFa4Lz.EGps65f0on6h0ri8M7Erba', '1987-06-15', 'ROLE_EMPLOYEE', false, 'security', '2026-06-01 10:00:00'),
+                                                                                                                                        ('EMPLOYEE', 'Europa', 'Employee', NULL, 'europa@gmail.com', '$2b$10$mLBvS/c6VJy/vJwUAuJhi.gWZFa4Lz.EGps65f0on6h0ri8M7Erba', '1996-10-03', 'ROLE_EMPLOYEE', true, 'security', '2026-06-01 10:00:00');

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{profile.page_title}">My Profile - Appliance Store</title>
+
+    <!-- Bootstrap 5 & Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<header th:insert="~{header::navy}"></header>
+
+<main class="flex-grow-1 py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <!-- Left column -->
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="card border-0 rounded shadow-sm text-center p-4">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-3" style="width: 100px; height: 100px;">
+                        <i class="ri-user-line" style="font-size: 3rem;"></i>
+                    </div>
+
+                    <!-- First name & Last name -->
+                    <h4 class="fw-bold mb-1" th:text="|${user.firstName} ${user.lastName}|"></h4>
+                    <p class="text-muted mb-3" th:text="${user.email}"></p>
+
+                    <!-- Role -->
+                    <div class="d-flex justify-content-center gap-2">
+                        <span class="badge bg-primary rounded-pill px-3 py-2 fw-medium" th:text="${user.role}"></span>
+
+                        <!-- Status -->
+                        <span class="badge rounded-pill px-3 py-2 fw-medium"
+                              th:classappend="${user.enabled != null and user.enabled} ? 'bg-success' : 'bg-secondary'"
+                              th:text="${user.enabled != null and user.enabled} ? #{user.profile.status.active} : #{user.profile.status.inactive}">
+                        </span>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Profile Menu -->
+                    <div class="list-group list-group-flush text-start">
+                        <a href="/profile" class="list-group-item list-group-item-action border-0 active bg-primary text-white rounded mb-1">
+                            <i class="ri-user-settings-line me-2 align-middle"></i>
+                            <span th:text="#{user.profile.menu.personal_info}">Personal Info</span>
+                        </a>
+
+                        <a href="/profile/update" class="list-group-item list-group-item-action border-0 rounded mb-1">
+                            <i class="ri-edit-box-line me-2 align-middle"></i>
+                            <span th:text="#{user.profile.menu.update_profile}">Update Profile</span>
+                        </a>
+
+                        <a href="/orders" class="list-group-item list-group-item-action border-0 rounded mb-1">
+                            <i class="ri-shopping-bag-3-line me-2 align-middle"></i>
+                            <span th:text="#{user.profile.menu.orders}">My Orders</span>
+                        </a>
+
+                        <form th:action="@{/logout}" method="post" class="m-0 mt-2">
+                            <button type="submit" class="list-group-item list-group-item-action border-0 text-danger rounded w-100 text-start">
+                                <i class="ri-logout-box-r-line me-2 align-middle"></i>
+                                <span th:text="#{user.profile.menu.logout}">Logout</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="col-lg-8">
+                <div class="card border-0 rounded shadow-sm">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h4 class="fw-bold mb-0" th:text="#{user.profile.menu.personal_details}">Personal Details</h4>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <div class="row g-3">
+                            <!-- First Name -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.first_name}">First Name</label>
+                                <div class="form-control bg-light border-0" th:text="${user.firstName}"></div>
+                            </div>
+
+                            <!-- Last Name -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.last_name}">Last Name</label>
+                                <div class="form-control bg-light border-0" th:text="${user.lastName}"></div>
+                            </div>
+
+                            <!-- Middle Name -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.middle_name}">Middle Name</label>
+                                <div class="form-control bg-light border-0" th:text="${user.middleName}"></div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.email}">Email Address</label>
+                                <div class="form-control bg-light border-0" th:text="${user.email}">user@example.com</div>
+                            </div>
+
+                            <!-- Birthday -->
+                            <div class="col-md-6">
+                                <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.birthday}">Birthday</label>
+                                <div class="form-control bg-light border-0" th:text="${user.birthday != null ? #temporals.format(user.birthday, 'dd MMMM yyyy') : '-'}">01 January 2000</div>
+                            </div>
+
+                            <!-- Dynamic Block for Client -->
+                            <th:block th:if="${isClient}">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.isClient.discount_cart}">Discount Card</label>
+                                    <div class="form-control bg-light border-0">
+                                        <i class="ri-bank-card-line me-1 text-primary"></i>
+
+                                        <span th:text="${user.card} ?: #{user.profile.menu.isClient.discount_cart.isEmpty}"></span>
+                                    </div>
+                                </div>
+                            </th:block>
+
+                            <!-- Dynamic Block for Employee -->
+                            <th:block th:if="${isEmployee}">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.isEmployee.department}">Department</label>
+                                    <div class="form-control bg-light border-0" th:text="${user.department}"></div>
+                                </div>
+                            </th:block>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Change Email Block -->
+                <div class="card border-0 rounded shadow-sm mt-4">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 class="fw-bold mb-0 text-danger">
+                            <i class="ri-mail-send-line me-2"></i>
+                            <span th:text="#{user.profile.menu.change_email.title}">Change Email Address</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div th:if="${param.error != null and param.error[0] == 'email'}" class="alert alert-danger small p-2">
+                            <span th:text="#{user.profile.menu.change_email.error}">Failed to change email. Make sure the password is correct and the new email is not already in use.</span>
+                        </div>
+                        <form th:action="@{/profile/change-email}" method="post">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.change.email.new}">New Email Address</label>
+                                    <input type="email" class="form-control" name="newEmail" placeholder="new@example.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.change.email.password}">Current Password (for security)</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Enter password to confirm" required>
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="submit" class="btn btn-outline-danger px-4" th:text="#{user.profile.menu.change.email.update.button}">Update Email</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Change Password Block -->
+                <div class="card border-0 rounded shadow-sm mt-4">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 class="fw-bold mb-0 text-dark">
+                            <i class="ri-lock-password-line me-2 text-primary"></i>
+                            <span th:text="#{user.profile.menu.change.password.title}">Change Password</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form th:action="@{/profile/change-password}" method="post">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.change.password.current}">Current Password</label>
+                                    <input type="password" class="form-control" name="oldPassword" required>
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.change.password.new}">New Password</label>
+                                    <input type="password" class="form-control" name="newPassword" required minlength="6">
+                                </div>
+                                <div class="col-md-6 mt-3">
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.change.password.confirm}">Confirm New Password</label>
+                                    <input type="password" class="form-control" name="confirmPassword" required minlength="6">
+                                </div>
+                            </div>
+                            <div class="text-end mt-4">
+                                <button type="submit" class="btn btn-primary px-4" th:text="#{user.profile.menu.change.password.update.button}">Update Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="card border-0 rounded shadow-sm mt-4">
+                    <div class="card-header bg-white border-bottom p-4">
+                        <h5 th:text="#{user.profile.menu.delete.account.title}">Delete Account</h5>
+                    </div>
+                        <div class="card-body">
+                            <div class="mb-6 col-12 mb-0">
+                                <div class="alert alert-warning">
+                                    <h5 class="alert-heading mb-1" th:text="#{user.profile.menu.delete.account.alert.message}">Are you sure you want to delete your account?</h5>
+                                    <p class="mb-0" th:text="#{user.profile.menu.delete.account.alert.message.confirm}">Once you delete your account, there is no going back. Please be certain.</p>
+                                </div>
+                            </div>
+                            <form id="formAccountDeactivation" th:action="@{/profile/deactivate}" method="POST">
+                                <div class="form-check my-8 ms-2">
+                                    <input class="form-check-input" type="checkbox" name="accountActivation" id="accountActivation" required />
+                                    <label class="form-check-label" for="accountActivation" th:text="#{user.profile.menu.delete.account.confirm.button}">I confirm my account deactivation</label>
+                                </div>
+                                <button type="submit" class="btn btn-danger deactivate-account" th:text="#{user.profile.menu.delete.account.button}">Deactivate Account</button>
+                            </form>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+<div th:insert="~{footer::footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

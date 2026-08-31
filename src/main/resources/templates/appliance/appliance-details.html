@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="uk" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${appliance.name} + ' - Appliance Store'"></title>
+
+    <!-- Bootstrap 5 & Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+
+    <style>
+        .product-image-placeholder {
+            background-color: #f8f9fa;
+            border-radius: 1rem;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dee2e6;
+        }
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2563eb;
+        }
+        .spec-table th {
+            width: 40%;
+            color: #6c757d;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<header th:insert="~{header::navy}"></header>
+
+<main class="flex-grow-1 py-5">
+    <div class="container">
+
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/" class="text-decoration-none" th:text="#{appliance.details.home}">Home</a></li>
+                <li class="breadcrumb-item">
+                    <a th:href="@{/category/{cat}(cat=${appliance.category})}" class="text-decoration-none" th:text="${appliance.category}">Category</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page" th:text="${appliance.manufacturerName}">Brand</li>
+            </ol>
+        </nav>
+
+        <div class="bg-white rounded-4 shadow-sm p-4 p-lg-5">
+            <div class="row g-5">
+                <div class="col-md-6">
+                    <div class="product-image-placeholder relative">
+                        <i class="ri-image-2-line text-secondary" style="font-size: 5rem; opacity: 0.5;"></i>
+                        <span class="position-absolute top-0 start-0 m-3 badge bg-primary" th:text="${appliance.manufacturerName}">Brand</span>
+                    </div>
+                </div>
+
+                <!-- Name -->
+                <div class="col-lg-6">
+                    <h1 class="fw-bold mb-2" th:text="${appliance.name}">Appliance name</h1>
+                    <p class="text-muted mb-4">
+                        <span th:text="#{appliance.details.model}">Model</span>: <span class="fw-medium text-dark" th:text="${appliance.model}">XYZ-123</span>
+                    </p>
+
+                    <!-- Price -->
+                    <div class="mb-4">
+                        <span class="price-tag" th:text="${appliance.price}">0</span>
+                        <span class="fs-4 text-muted fw-bold">$</span>
+                    </div>
+
+                    <!-- Description -->
+                    <p class="mb-4 text-secondary" th:text="${appliance.description}">
+                        Here will be the product description, which is pulled from the database.
+                    </p>
+
+                    <!-- Add to card -->
+                    <form sec:authorize="hasAuthority('ROLE_CLIENT')" th:action="@{/cart/add}" method="post" class="d-flex gap-3 mb-5">
+
+                        <input type="hidden" name="clientEmail" th:value="${#authentication.name}">
+                        <input type="hidden" name="applianceId" th:value="${appliance.id}">
+
+                        <div class="input-group" style="width: 130px;">
+                            <button class="btn btn-outline-secondary" type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+                            <input type="number" class="form-control text-center" name="quantity" value="1" min="1" max="10">
+                            <button class="btn btn-outline-secondary" type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg flex-grow-1 fw-bold rounded-pill shadow-sm">
+                            <i class="ri-shopping-cart-2-line me-2"></i> <span th:text="#{appliance.details.add_to_cart}">Add to Cart</span>
+                        </button>
+                    </form>
+
+                    <!-- Edit Appliance (for Admin and Employee) -->
+                    <div sec:authorize="hasAnyAuthority('ROLE_ADMIN', 'ROLE_EMPLOYEE')" class="d-flex gap-3 mb-5">
+                        <a th:href="@{/appliances/edit/{id}(id=${appliance.id})}" class="btn btn-outline-primary btn-lg flex-grow-1 fw-bold rounded-pill shadow-sm d-flex align-items-center justify-content-center">
+                            <i class="ri-edit-2-line me-2"></i> <span th:text="#{appliance.details.edit}">Edit Appliance</span>
+                        </a>
+                    </div>
+
+                    <!-- Login For Unauthenticated -->
+                    <div sec:authorize="!isAuthenticated()" class="d-flex gap-3 mb-5">
+                        <a th:href="@{/login}" class="btn btn-outline-primary btn-lg flex-grow-1 fw-bold rounded-pill shadow-sm d-flex align-items-center justify-content-center">
+                            <i class="ri-login-box-line me-2"></i> <span th:text="#{appliance.details.login.user}">Log in to purchase</span>
+                        </a>
+                    </div>
+
+                    <!-- Characters table -->
+                    <h4 class="fw-bold mb-3" th:text="#{appliance.details.specs}">Specifications</h4>
+                    <table class="table table-borderless table-striped spec-table rounded-3 overflow-hidden">
+                        <tbody>
+                        <tr>
+                            <th th:text="#{appliance.details.manufacturer}">Manufacturer</th>
+                            <td th:text="${appliance.manufacturerName}">Manufacturer</td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{appliance.details.category}">Category</th>
+                            <td th:text="${appliance.category}">Category</td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{appliance.details.power_type}">Power Type</th>
+                            <td th:text="${appliance.powerType}">Power Type</td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{appliance.details.power}">Power (W)</th>
+                            <td th:text="${appliance.power}">1000</td>
+                        </tr>
+                        <tr>
+                            <th th:text="#{appliance.details.characteristics}">Features</th>
+                            <td th:text="${appliance.characteristic}">Details</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:insert="~{footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

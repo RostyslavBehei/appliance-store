@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{admin.appliances.page_title}">Appliances - Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+    <div th:replace="~{admin/admin-sidebar :: sidebar}"></div>
+
+    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold mb-0 text-dark" th:text="#{admin.appliances.title}">Appliances Management</h3>
+            <div class="d-flex align-items-center bg-white px-3 py-2 rounded shadow-sm border-0">
+                <i class="ri-admin-line text-primary me-2 fs-5"></i>
+                <span class="text-muted fw-medium me-3" th:text="${#authentication.name}">admin</span>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4">
+
+            <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <form th:action="@{/admin/appliances}" method="get" class="row g-2 align-items-center flex-grow-1 m-0">
+                    <div class="col-md-6 position-relative">
+                        <i class="ri-search-line position-absolute top-50 translate-middle-y text-muted ms-3"></i>
+                        <input type="text" name="keyword" class="form-control bg-light border-0 ps-5"
+                               th:placeholder="#{admin.appliances.search}" th:value="${keyword}">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="sort" class="form-select bg-light border-0">
+                            <option value="newest" th:selected="${sort == 'newest'}" th:text="#{admin.sort.newest}">Newest First</option>
+                            <option value="oldest" th:selected="${sort == 'oldest'}" th:text="#{admin.sort.oldest}">Oldest First</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100 rounded-3">
+                            <i class="ri-search-line me-1"></i> <span th:text="#{admin.btn.search}">Search</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div>
+                    <a th:href="@{/admin/appliances/new}" class="btn btn-success text-white rounded-3 shadow-sm text-nowrap">
+                        <i class="ri-add-line me-1"></i> <span th:text="#{admin.appliances.add_btn}">Add Appliance</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-borderless align-middle mb-0">
+                        <thead class="table-light text-muted small">
+                        <tr>
+                            <th class="ps-4">ID</th>
+                            <th th:text="#{admin.appliances.table.name}">Product Name</th>
+                            <th th:text="#{admin.appliances.table.manufacturer}">Manufacturer</th>
+                            <th th:text="#{admin.appliances.table.category}">Category</th>
+                            <th th:text="#{admin.appliances.table.price}">Price</th>
+                            <th class="text-end pe-4" th:text="#{admin.table.actions}">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${appliances.empty}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="ri-macbook-line fs-1 d-block mb-2 opacity-50"></i>
+                                <span th:text="#{admin.appliances.no_found}">No appliances found.</span>
+                            </td>
+                        </tr>
+
+                        <tr th:each="appliance : ${appliances.content}">
+                            <td class="ps-4 fw-medium text-muted" th:text="'#' + ${appliance.id}">#1</td>
+                            <td>
+                                <div class="fw-bold text-dark" th:text="${appliance.name}">Samsung Washer</div>
+                                <div class="small text-muted" th:text="'Model: ' + ${appliance.model}">Model: X123</div>
+                            </td>
+                            <td class="text-muted" th:text="${appliance.manufacturerName}">Samsung</td>
+                            <td>
+                                <span class="badge bg-light text-dark border px-2 py-1" th:text="${appliance.category}">BIG</span>
+                            </td>
+                            <td class="fw-bold text-primary" th:text="${appliance.price + ' $'}">15000.00 $</td>
+                            <td class="text-end pe-4">
+                                <div class="d-flex justify-content-end gap-2">
+                                    <a th:href="@{/admin/appliances/{id}(id=${appliance.id})}" class="btn btn-sm btn-outline-info" th:title="#{admin.btn.view}">
+                                        <i class="ri-eye-line"></i>
+                                    </a>
+                                    <a th:href="@{/admin/appliances/edit/{id}(id=${appliance.id})}" class="btn btn-sm btn-outline-primary" th:title="#{admin.btn.edit}">
+                                        <i class="ri-pencil-line"></i>
+                                    </a>
+                                    <form th:action="@{/admin/appliances/delete/{id}(id=${appliance.id})}" method="post"
+                                          th:onsubmit="'return confirm(\'' + #{admin.appliances.delete_confirm} + '\');'">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" th:title="#{admin.btn.delete}"><i class="ri-delete-bin-line"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center" th:if="${!appliances.empty}">
+                <span class="text-muted small" th:text="#{admin.pagination.showing(${appliances.number + 1}, ${appliances.totalPages})}">Showing page 1 of 5</span>
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" th:classappend="${appliances.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/appliances(page=${appliances.number - 1}, keyword=${keyword}, sort=${sort})}"><i class="ri-arrow-left-s-line"></i></a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, appliances.totalPages - 1)}" th:classappend="${appliances.number == i} ? 'active'">
+                            <a class="page-link" th:href="@{/admin/appliances(page=${i}, keyword=${keyword}, sort=${sort})}" th:text="${i + 1}">1</a>
+                        </li>
+                        <li class="page-item" th:classappend="${appliances.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/admin/appliances(page=${appliances.number + 1}, keyword=${keyword}, sort=${sort})}"><i class="ri-arrow-right-s-line"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

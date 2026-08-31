@@ -1,11 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
+<footer th:fragment="footer" class="bg-dark text-white-50 pt-5 pb-3 mt-auto w-100">
+    <div class="container">
+        <div class="row g-4 mb-4">
 
-    <footer th:fragment="footer" class="footer fixed-bottom text-center">
-        <div>
-            <span class="text-center">© 2024 EPAM Test project</span>
+            <div class="col-lg-4 col-md-6">
+                <h5 class="text-white fw-bold mb-3">
+                    <i class="ri-store-2-line text-primary me-2"></i>Appliance Store
+                </h5>
+                <p class="small mb-4" th:text="#{footer.description}">
+                    Your trusted partner for high-quality home appliances. We provide top brands and excellent customer service.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-white-50 text-decoration-none fs-5 hover-white"><i class="ri-facebook-circle-fill"></i></a>
+                    <a href="#" class="text-white-50 text-decoration-none fs-5 hover-white"><i class="ri-instagram-line"></i></a>
+                    <a href="#" class="text-white-50 text-decoration-none fs-5 hover-white"><i class="ri-twitter-x-line"></i></a>
+                    <a href="#" class="text-white-50 text-decoration-none fs-5 hover-white"><i class="ri-youtube-fill"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <h6 class="text-white fw-bold mb-3 text-uppercase" th:text="#{footer.links.title}">Quick Links</h6>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2 small">
+                    <li><a th:href="@{/}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.links.home}">Home</a></li>
+                    <li><a th:href="@{/catalog}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.links.shop}">Shop</a></li>
+                    <li><a th:href="@{/about}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.links.about}">About Us</a></li>
+                    <li><a th:href="@{/contact}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.links.contact}">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-white fw-bold mb-3 text-uppercase" th:text="#{footer.customer.title}">Customer Service</h6>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-2 small">
+                    <li><a th:href="@{/profile}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.customer.account}">My Account</a></li>
+                    <li><a th:href="@{/orders}" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.customer.orders}">Order History</a></li>
+                    <li><a href="#" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.customer.shipping}">Shipping Info</a></li>
+                    <li><a href="#" class="text-white-50 text-decoration-none hover-white" th:text="#{footer.customer.returns}">Returns & Refunds</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-white fw-bold mb-3 text-uppercase" th:text="#{footer.contact.title}">Contact Us</h6>
+                <ul class="list-unstyled mb-0 d-flex flex-column gap-3 small">
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="ri-map-pin-line text-primary fs-5 mt-n1"></i>
+                        <span th:text="#{footer.contact.address}">Volodymyr Velykyi St, Lviv, Ukraine</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="ri-phone-line text-primary fs-5"></i>
+                        <span>+380 99 123 45 67</span>
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="ri-mail-send-line text-primary fs-5"></i>
+                        <span>support@appliancestore.com</span>
+                    </li>
+                </ul>
+            </div>
+
         </div>
-    </footer>
+
+        <div class="border-top border-secondary pt-3 mt-4 text-center small">
+            &copy; <span th:text="${#dates.format(#dates.createNow(), 'yyyy')}">2026</span> Appliance Store. <span th:text="#{footer.copyright}">All rights reserved.</span>
+        </div>
+    </div>
+
+    <style>
+        .hover-white:hover {
+            color: #ffffff !important;
+            transition: color 0.2s ease-in-out;
+        }
+    </style>
+</footer>
 </body>
 </html>

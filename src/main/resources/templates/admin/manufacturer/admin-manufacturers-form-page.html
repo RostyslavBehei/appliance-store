@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${manufacturer.id == null} ? #{admin.manufacturers.form.title_add} : #{admin.manufacturers.form.title_edit}">Form - Admin Panel</title>
+
+    <!-- Bootstrap 5 & Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+    <!-- Бокове меню -->
+    <div th:replace="~{admin/admin-sidebar :: sidebar}"></div>
+
+    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+
+        <!-- Заголовок і кнопка Назад -->
+        <div class="mb-4">
+            <a th:href="@{/admin/manufacturers}" class="text-decoration-none text-muted small">
+                <i class="ri-arrow-left-line"></i> <span th:text="#{admin.manufacturers.back}">Back to Manufacturers</span>
+            </a>
+            <h3 class="fw-bold mb-0 text-dark mt-1"
+                th:text="${manufacturer.id == null} ? #{admin.manufacturers.form.title_add} : #{admin.manufacturers.form.title_edit}">
+                Add/Edit Manufacturer
+            </h3>
+        </div>
+
+        <!-- Картка з формою -->
+        <div class="card border-0 shadow-sm rounded-4" style="max-width: 600px;">
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Форма відправляє дані на /admin/manufacturers/save -->
+                <form th:action="@{/admin/manufacturers/save}" th:object="${manufacturer}" method="post">
+
+                    <!-- Прихований ID (для редагування) -->
+                    <input type="hidden" th:field="*{id}" />
+
+                    <!-- Поле Назва -->
+                    <div class="mb-4">
+                        <label class="form-label fw-medium text-dark" th:text="#{admin.manufacturers.form.name}">Manufacturer Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control form-control-lg bg-light border-0" th:field="*{name}" required>
+                    </div>
+
+                    <!-- Кнопки збереження та скасування -->
+                    <div class="mt-4 pt-3 border-top d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4 rounded-pill fw-medium">
+                            <i class="ri-save-line me-1"></i> <span th:text="#{admin.btn.save}">Save</span>
+                        </button>
+                        <a th:href="@{/admin/manufacturers}" class="btn btn-light border px-4 rounded-pill fw-medium">
+                            <span th:text="#{admin.btn.cancel}">Cancel</span>
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -132,7 +132,7 @@ if [ -z "$JAVA_HOME" ] ; then
   echo "Warning: JAVA_HOME environment variable is not set."
 fi
 
-# traverses directory structure from process work directory to filesystem root
+# traverses directory structure fromEntity process work directory to filesystem root
 # first directory with .mvn subdirectory is considered project base directory
 find_maven_basedir() {
   if [ -z "$1" ]
@@ -184,7 +184,7 @@ MAVEN_PROJECTBASEDIR=${MAVEN_BASEDIR:-"$BASE_DIR"}; export MAVEN_PROJECTBASEDIR
 log "$MAVEN_PROJECTBASEDIR"
 
 ##########################################################################################
-# Extension to allow automatically downloading the maven-wrapper.jar from Maven-central
+# Extension to allow automatically downloading the maven-wrapper.jar fromEntity Maven-central
 # This allows using the maven wrapper in projects that prohibit checking in binary data.
 ##########################################################################################
 wrapperJarPath="$MAVEN_PROJECTBASEDIR/.mvn/wrapper/maven-wrapper.jar"
@@ -199,7 +199,7 @@ else
       wrapperUrl="https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
     fi
     while IFS="=" read -r key value; do
-      # Remove '\r' from value to allow usage on windows as IFS does not consider '\r' as a separator ( considers space, tab, new line ('\n'), and custom '=' )
+      # Remove '\r' fromEntity value to allow usage on windows as IFS does not consider '\r' as a separator ( considers space, tab, new line ('\n'), and custom '=' )
       safeValue=$(echo "$value" | tr -d '\r')
       case "$key" in (wrapperUrl) wrapperUrl="$safeValue"; break ;;
       esac

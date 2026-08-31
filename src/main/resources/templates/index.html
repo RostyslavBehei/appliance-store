@@ -1,21 +1,171 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <!-- Latest compiled and minified CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{page.title}">Appliance Store</title>
+
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <title>Title</title>
+    <!-- Main CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<header>
-    <div th:insert="~{menunavy::navy}"></div>
-</header>
-<main>
-    <h1>Main content</h1>
+<header th:insert="~{header::navy}"></header>
+
+<main class="main py-5">
+    <div class="container">
+
+        <div class="hero-section text-center mb-5">
+            <h1 class="page-title fw-bold" th:text="#{home.title}">Appliance catalog</h1>
+            <p class="page-subtitle text-muted" th:text="#{home.subtitle}">Choose the best appliances for your home</p>
+        </div>
+
+        <div class="filter-bar d-flex flex-wrap align-items-center gap-4 mb-4 p-3 bg-white rounded shadow-sm border">
+            <span th:text="#{home.sort.sorting}" class="filter-label fw-bold text-secondary">Sorting:</span>
+
+            <a th:href="@{${baseUrl}(page=${currentPage}, keyword=${keyword}, sortField='name', sortDir=${sortField == 'name' ? reverseSortDir : 'asc'})}"
+               class="filter-link text-decoration-none d-flex align-items-center gap-1"
+               th:classappend="${sortField == 'name'} ? 'text-primary fw-bold' : 'text-dark'">
+                <span th:text="#{home.sort.name}">Name</span>
+                <i th:if="${sortField == 'name'}" th:classappend="${sortDir == 'asc' ? 'ri-sort-asc' : 'ri-sort-desc'}"></i>
+            </a>
+
+            <a th:href="@{${baseUrl}(page=${currentPage}, keyword=${keyword}, sortField='price', sortDir=${sortField == 'price' ? reverseSortDir : 'asc'})}"
+               class="filter-link text-decoration-none d-flex align-items-center gap-1"
+               th:classappend="${sortField == 'price'} ? 'text-primary fw-bold' : 'text-dark'">
+                <span th:text="#{home.sort.price}">Price</span>
+                <i th:if="${sortField == 'price'}" th:classappend="${sortDir == 'asc' ? 'ri-sort-asc' : 'ri-sort-desc'}"></i>
+            </a>
+
+            <a th:if="${keyword != null && keyword != ''}" href="/" class="filter-reset btn btn-sm btn-outline-danger ms-auto">
+                <i class="ri-close-line"></i>
+                <span th:text="#{home.button.resetSearch}">Reset search</span>
+            </a>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="row g-4">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="appliance : ${appliances}">
+                <div class="cart h-100 shadow-sm border-0 appliance-cart">
+
+                    <div class="cart-img-top bg-secondary bg-opacity-10 d-flex justify-content-center align-items-center" style="height: 200px;">
+                        <i class="ri-macbook-line text-secondary" style="font-size: 64px;"></i>
+                    </div>
+
+                    <div class="cart-body d-flex flex-column">
+                        <!-- Model name -->
+                        <h5 class="cart-title fw-bold mb-1" th:text="${appliance.name}">Model name</h5>
+
+                        <!-- Manufacturer name -->
+                        <h6 class="cart-subtitle text-muted mb-3">
+                            <i class="ri-building-4-line align-middle"></i>
+                            <span th:text="${appliance.manufacturerName}">Manufacturer name</span>
+                        </h6>
+
+                        <!-- Model -->
+                        <div class="mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill px-3"
+                                  th:text="${appliance.model}">Model</span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="mt-auto d-flex justify-content-between align-items-center mb-3">
+                            <span class="fs-4 fw-bold text-dark" th:text="${#numbers.formatDecimal(appliance.price, 1, 2)} + ' $'"></span>
+                        </div>
+
+                        <div class="d-flex flex-column gap-2">
+                            <a th:href="@{/appliances/{id}(id=${appliance.id})}" class="btn btn-outline-secondary w-100" th:text="#{home.button.view}">View</a>
+
+                            <a sec:authorize="!isAuthenticated()" href="/login" class="btn btn-primary w-100" th:text="#{home.button.buy}">Buy</a>
+
+
+                            <form sec:authorize="isAuthenticated()" th:action="@{/cart/add}" method="post" class="w-100">
+                                <div sec:authorize="hasRole('CLIENT')">
+                                    <input type="hidden" name="clientEmail" th:value="${#authentication.name}">
+                                    <input type="hidden" name="applianceId" th:value="${appliance.id}">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="ri-shopping-cart-2-line me-1"></i> <span th:text="#{home.button.addToCart}">Add to cart</span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div sec:authorize="hasAnyRole('ADMIN', 'EMPLOYEE')" class="d-flex flex-column gap-2">
+                                <a th:href="@{/appliances/edit/{id}(id=${appliance.id})}" class="btn btn-warning flex-grow-1 text-white" title="Edit">
+                                    <i class="ri-edit-line"></i>
+                                </a>
+                                <form th:action="@{/appliances/delete/{id}(id=${appliance.id})}" method="post" class="flex-grow-1"
+                                      sec:authorize="hasRole('ADMIN')"
+                                      onsubmit="return confirm('Delete this appliance?');">
+                                    <button type="submit" class="btn btn-danger w-100" title="Delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${appliances == null or appliances.empty}" class="text-center bg-white rounded shadow-sm border p-5 my-4">
+            <i class="ri-shopping-basket-line text-secondary" style="font-size: 64px;"></i>
+            <h3 class="mt-3 text-dark fw-bold" th:text="#{home.noAppliances}">No products yet 😔</h3>
+            <a th:if="${keyword != null}" th:text="#{home.appliances}" href="/" class="btn btn-primary mt-3 px-4">Show all appliance</a>
+        </div>
+
+        <!-- Pagination Block -->
+        <nav th:if="${totalPages > 1}" class="mt-5 d-flex justify-content-center flex-column align-items-center">
+            <ul class="pagination pagination-lg mb-2">
+
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{${baseUrl ?: '/'}(page=${currentPage - 1}, keyword=${keyword}, sortField=${sortField}, sortDir=${sortDir})}">
+                        <i class="ri-arrow-left-s-line"></i>
+                    </a>
+                </li>
+
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i} ? 'active'">
+                    <a class="page-link" th:href="@{${baseUrl ?: '/'}(page=${i}, keyword=${keyword}, sortField=${sortField}, sortDir=${sortDir})}" th:text="${i + 1}">1</a>
+                </li>
+
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{${baseUrl ?: '/'}(page=${currentPage + 1}, keyword=${keyword}, sortField=${sortField}, sortDir=${sortDir})}">
+                        <i class="ri-arrow-right-s-line"></i>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="text-muted small">
+                <span th:text="#{pageable.pagination.page}">Page</span>
+                <span th:text="${currentPage + 1}" class="fw-bold text-dark"></span>
+                <span th:text="#{pageable.pagination.of}">of</span>
+                <span th:text="${totalPages}" class="fw-bold text-dark"></span>
+            </div>
+        </nav>
+
+    </div>
 </main>
+
 <div th:insert="~{footer::footer}"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script th:inline="javascript">
+    const translations = {
+        cartAdded: /*[[#{notification.cartAdded}]]*/ 'Added!',
+        quantityUpdated: /*[[#{notification.quantityUpdated}]]*/ 'Updated!'
+    };
+</script>
+<script th:src="@{/js/home.js}"></script>
+
 </body>
 </html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{login.page_title}">Login - Appliance Store</title>
+    <link rel="icon" href="data:,">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Remix Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Main CSS -->
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<header th:insert="~{header::navy}"></header>
+
+<main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-5">
+
+                <!-- Login cart -->
+                <div class="cart login-cart shadow-lg p-4 p-sm-5">
+
+                    <div class="text-center mb-4">
+                        <div class="login-icon-wrapper mb-3">
+                            <i class="ri-user-smile-line text-primary" style="font-size: 2.5rem;"></i>
+                        </div>
+                        <h2 class="fw-bold" th:text="#{login.title}">Welcome back!</h2>
+                        <p class="text-muted" th:text="#{login.subtitle}">Enter your account access details</p>
+                    </div>
+
+                    <!-- Messages block -->
+                    <div th:if="${param.error}" class="alert alert-danger border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-error-warning-line fs-5 me-2"></i>
+                        <div th:text="#{login.error}">Invalid email or password.</div>
+                    </div>
+
+                    <div th:if="${param.logout}" class="alert alert-success border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-checkbox-circle-line fs-5 me-2"></i>
+                        <div th:text="#{login.logout_success}">You successfully logged out.</div>
+                    </div>
+
+                    <form th:action="@{/login}" method="post">
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required autofocus>
+                                <label for="email" class="text-muted">
+                                <i class="ri-mail-line me-1"></i> <span th:text="#{login.form.email}">Email</span>
+                            </label>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="form-floating mb-4">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <label for="password" class="text-muted">
+                                <i class="ri-lock-password-line me-1"></i> <span th:text="#{login.form.password}">Password</span>
+                            </label>
+                        </div>
+
+                        <!-- Remember me & Forgot password -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
+                                <label class="form-check-label text-muted" for="remember-me" th:text="#{login.form.remember}">Remember me</label>
+                            </div>
+                            <a href="/forgot-password" class="text-decoration-none small fw-medium" th:text="#{login.form.forgot_password}">Forgot password?</a>
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary btn-lg w-100 rounded-pill fw-bold shadow-sm">
+                            <span th:text="#{login.form.submit}">Submit</span> <i class="ri-arrow-right-line ms-1"></i>
+                        </button>
+                    </form>
+
+                    <!-- Registration -->
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <span class="text-muted" th:text="#{login.form.no_account}">Don't have an account?</span>
+                        <a href="/register" class="text-decoration-none fw-bold ms-1" th:text="#{login.form.register_link}">Sign in</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:insert="~{footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
