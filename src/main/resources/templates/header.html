@@ -38,9 +38,15 @@
             <div class="header-actions d-flex align-items-center gap-3">
 
                 <!-- Admin Panel -->
-                <a sec:authorize="hasRole('ADMIN')" href="/admin" class="action-item text-decoration-none text-dark d-flex flex-column align-items-center" aria-label="Admin Panel">
+                <a sec:authorize="hasRole('ADMIN')" href="/admin" class="alert-danger action-item text-decoration-none text-dark d-flex flex-column align-items-center" aria-label="Admin Panel">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                     <span th:text="#{header.button.admin}" class="small mt-1">Admin</span>
+                </a>
+
+                <!-- Employee Panel -->
+                <a sec:authorize="hasRole('EMPLOYEE')" href="/employee-panel" class="alert-danger action-item text-decoration-none text-dark d-flex flex-column align-items-center" aria-label="Admin Panel">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                    <span th:text="#{header.button.employee-panel}" class="small mt-1">Employee Panel</span>
                 </a>
 
                 <!-- Block for Unauthorized -->
@@ -89,7 +95,6 @@
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                               style="font-size: 0.65rem;"
                               th:text="${cartItemCount ?: 0}">
-                            0
                         </span>
                     </div>
                     <span th:text="#{header.button.cart}" class="small mt-1">Cart</span>

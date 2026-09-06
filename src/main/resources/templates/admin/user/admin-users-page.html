@@ -40,11 +40,6 @@
             <div class="d-flex align-items-center bg-white px-3 py-2 rounded shadow-sm border-0">
                 <i class="ri-admin-line text-primary me-2 fs-5"></i>
                 <span class="text-muted fw-medium me-3" th:text="${#authentication.name}">admin@store.com</span>
-                <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="btn btn-sm btn-light text-danger p-1 px-2" title="Logout">
-                        <i class="ri-logout-box-r-line"></i>
-                    </button>
-                </form>
             </div>
         </div>
 

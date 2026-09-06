@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{employee.orders.details.page_title} + ' #' + ${order.id}">Order Details - Employee Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+
+    <div th:replace="~{employee-panel/employee-sidebar :: sidebar}"></div>
+
+    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+
+        <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <a th:href="@{/employee-panel/orders}" class="text-decoration-none text-muted small">
+                    <i class="ri-arrow-left-line"></i> <span th:text="#{employee.orders.btn.back}">Back to Orders</span>
+                </a>
+                <h3 class="fw-bold mb-0 text-dark mt-1">
+                    <span th:text="#{employee.orders.details.title}">Order Details</span> <span class="text-primary" th:text="'#' + ${order.id}">#1024</span>
+                </h3>
+            </div>
+
+            <form th:if="${!order.approved}" th:action="@{/employee-panel/orders/{id}/approve(id=${order.id})}" method="post" class="m-0">
+                <button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm fw-medium">
+                    <i class="ri-check-double-line me-1"></i> <span th:text="#{employee.orders.btn.approve}">Approve Order</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="d-flex flex-column gap-4 position-sticky" style="top: 20px;">
+
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold text-dark border-bottom pb-3 mb-4">
+                                <i class="ri-file-list-3-line text-primary me-2"></i><span th:text="#{employee.orders.details.summary}">Order Summary</span>
+                            </h5>
+
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted fw-medium" th:text="#{employee.orders.table.status}">Status</span>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${order.approved} ? 'bg-success bg-opacity-10 text-success border border-success-subtle' : 'bg-warning bg-opacity-10 text-warning border border-warning-subtle'"
+                                      th:text="${order.approved} ? #{employee.orders.status.approved} : #{employee.orders.status.pending}">
+                                </span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-3">
+                                <span class="text-muted fw-medium" th:text="#{employee.orders.table.date}">Created At</span>
+                                <span class="fw-medium text-dark text-end" th:text="${order.createdAt != null ? #temporals.format(order.createdAt, 'dd MMM yyyy, HH:mm') : '-'}">10 Apr 2026, 14:30</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mb-4 pb-3 border-bottom">
+                                <span class="text-muted fw-medium" th:text="#{employee.orders.details.updated}">Last Updated</span>
+                                <span class="fw-medium text-dark text-end" th:text="${order.updatedAt != null ? #temporals.format(order.updatedAt, 'dd MMM yyyy, HH:mm') : '-'}">-</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center bg-light p-3 rounded-3">
+                                <span class="fs-6 text-muted fw-bold text-uppercase" th:text="#{employee.orders.details.total}">Total</span>
+                                <span class="fs-4 fw-bold text-primary" th:text="${(order.totalPrice != null ? #numbers.formatDecimal(order.totalPrice, 1, 2) : '0.00') + ' $'}">1500.00 $</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold text-dark border-bottom pb-3 mb-4">
+                                <i class="ri-truck-line text-primary me-2"></i><span th:text="#{employee.orders.shipping.info}">Shipping & Payment</span>
+                            </h5>
+
+                            <div th:if="${order.shippingDetails != null}">
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-bold text-uppercase d-block mb-2" th:text="#{employee.orders.recipient}">Recipient</span>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="ri-user-3-line text-muted me-2"></i>
+                                        <span class="fw-medium text-dark" th:text="${(order.shippingDetails.contactFirstName != null ? order.shippingDetails.contactFirstName : '') + ' ' + (order.shippingDetails.contactLastName != null ? order.shippingDetails.contactLastName : '')}">John Doe</span>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-1">
+                                        <i class="ri-phone-line text-muted me-2"></i>
+                                        <span class="text-dark small" th:text="${order.shippingDetails.contactPhone != null ? order.shippingDetails.contactPhone : '-'}">+380000000000</span>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <i class="ri-mail-line text-muted me-2"></i>
+                                        <span class="text-dark small text-truncate" th:text="${order.shippingDetails.contactEmail != null ? order.shippingDetails.contactEmail : '-'}">user@example.com</span>
+                                    </div>
+                                </div>
+
+                                <hr class="opacity-25 my-3">
+
+                                <div class="mb-3">
+                                    <span class="text-muted small fw-bold text-uppercase d-block mb-2" th:text="#{employee.orders.address}">Delivery Address</span>
+                                    <div class="d-flex align-items-start">
+                                        <i class="ri-map-pin-2-line text-danger me-2 mt-1"></i>
+                                        <div>
+                                            <span class="fw-medium text-dark d-block" th:text="${order.shippingDetails.street != null ? order.shippingDetails.street : '-'}">Street Address</span>
+                                            <span class="text-muted small d-block">
+                                                <span th:text="${order.shippingDetails.city != null ? order.shippingDetails.city : '-'}">City</span>,
+                                                <span th:text="${order.shippingDetails.country != null ? order.shippingDetails.country : '-'}">Country</span>
+                                            </span>
+                                            <span class="text-muted small d-block">
+                                                <span th:text="#{employee.orders.zip}">Zip:</span>
+                                                <span class="fw-medium text-dark" th:text="${order.shippingDetails.zipCode != null ? order.shippingDetails.zipCode : '-'}">00000</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="opacity-25 my-3">
+
+                                <div>
+                                    <span class="text-muted small fw-bold text-uppercase d-block mb-2" th:text="#{employee.orders.payment.method}">Payment Method</span>
+                                    <span class="badge bg-light text-dark border px-3 py-2 fs-6 rounded-pill" th:if="${order.shippingDetails.paymentMethod == 'CASH'}">
+                                        <i class="ri-money-dollar-circle-line text-success me-1"></i> <span th:text="#{employee.orders.payment.cash}">Cash on Delivery</span>
+                                    </span>
+                                    <span class="badge bg-light text-primary border px-3 py-2 fs-6 rounded-pill" th:if="${order.shippingDetails.paymentMethod == 'CARD'}">
+                                        <i class="ri-bank-card-line me-1"></i> <span th:text="#{employee.orders.payment.card}">Credit Card</span>
+                                    </span>
+                                    <span class="badge bg-light text-secondary border px-3 py-2 fs-6 rounded-pill" th:if="${order.shippingDetails.paymentMethod != 'CASH' and order.shippingDetails.paymentMethod != 'CARD'}">
+                                        <i class="ri-wallet-3-line me-1"></i> <span th:text="${order.shippingDetails.paymentMethod != null ? order.shippingDetails.paymentMethod : '-'}">Custom</span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div th:unless="${order.shippingDetails != null}" class="text-center py-3 text-muted">
+                                <i class="ri-inbox-line fs-2 opacity-50 d-block mb-1"></i>
+                                <span class="small" th:text="#{employee.orders.no.shipping}">No shipping details available.</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-bottom pt-4 pb-3 px-4">
+                        <h5 class="mb-0 fw-bold text-dark"><i class="ri-shopping-cart-2-line text-primary me-2"></i><span th:text="#{employee.orders.details.items}">Items in Order</span></h5>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-borderless align-middle mb-0">
+                                <thead class="table-light text-muted small">
+                                <tr>
+                                    <th class="ps-4" th:text="#{employee.orders.items.product}">Product</th>
+                                    <th th:text="#{employee.orders.items.qty}">Qty</th>
+                                    <th th:text="#{employee.orders.items.price}">Unit Price</th>
+                                    <th class="text-end pe-4" th:text="#{employee.orders.items.total}">Row Total</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                <tr th:if="${order.orderRowResponses == null or #lists.isEmpty(order.orderRowResponses)}">
+                                    <td colspan="4" class="text-center text-muted py-4" th:text="#{employee.orders.items.empty}">No items in this order.</td>
+                                </tr>
+
+                                <tr th:each="row : ${order.orderRowResponses}">
+                                    <td class="ps-4">
+                                        <div class="fw-bold text-dark mb-1" th:text="${row.appliance.manufacturerName + ' ' + row.appliance.name}">Appliance Name</div>
+                                        <div class="small text-muted d-flex gap-2 align-items-center">
+                                            <span class="badge bg-light text-dark border" th:text="${row.appliance.category}">BIG</span>
+                                            <span th:text="'Model: ' + ${row.appliance.model}">Model: X123</span>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle px-2 py-1 fs-6" th:text="${row.number}">1</span>
+                                    </td>
+
+                                    <td class="text-muted fw-medium">
+                                        <span th:text="${row.appliance.price != null ? #numbers.formatDecimal(row.appliance.price, 1, 2) : '0.00'}">0.00</span> $
+                                    </td>
+
+                                    <td class="text-end pe-4 fw-bold text-dark">
+                                        <span th:text="${row.amount != null ? #numbers.formatDecimal(row.amount, 1, 2) : '0.00'}">0.00</span> $
+                                    </td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

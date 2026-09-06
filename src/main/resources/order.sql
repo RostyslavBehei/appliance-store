@@ -1,18 +1,51 @@
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (5, 1, 150.00, true, '2026-07-15 10:00:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (6, 2, 171.00, true, '2026-07-22 14:30:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (7, 1, 120.00, false, '2026-07-28 16:45:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (8, 3, 450.00, true, '2026-08-05 09:00:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (9, 2, 540.00, true, '2026-08-12 11:30:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (10, 4, 230.00, true, '2026-08-20 15:20:00');
-INSERT INTO orders (client_id, employee_id, total_price, approved, created_at) VALUES (11, 1, 320.00, false, '2026-08-22 18:00:00');
+INSERT INTO orders (client_id, employee_id, total_price, approved,
+                    contact_first_name, contact_last_name, contact_phone, contact_email,
+                    country, city, street, zip_code, payment_method, created_at, updated_at)
+VALUES
+(17, 1, 150.00, true,  'Mercury', 'Client', '+380501112233', 'mercury@gmail.com', 'Ukraine', 'Kyiv',    'Khreshchatyk 12',  '01001', 'CARD', '2026-07-15 10:00:00', '2026-07-15 10:00:00'),
+(18, 2, 171.00, true,  'Venus',   'Client', '+380672223344', 'venus@gmail.com',   'Ukraine', 'Lviv',    'Horodotska 45',    '79000', 'CARD', '2026-07-22 14:30:00', '2026-07-22 14:30:00'),
+(19, 1, 120.00, false, 'Earth',   'Client', '+380933334455', 'earth@gmail.com',   'Ukraine', 'Odesa',   'Deribasivska 3',   '65000', 'CASH', '2026-07-28 16:45:00', '2026-07-28 16:45:00'),
+(20, 3, 450.00, true,  'Mars',    'Client', '+380504445566', 'IamGod@gmail.com',  'Ukraine', 'Kharkiv', 'Sumska 21',        '61000', 'CARD', '2026-08-05 09:00:00', '2026-08-05 09:00:00'),
+(21, 2, 540.00, true,  'Jupiter', 'Client', '+380675556677', 'jupiter@gmail.com', 'Ukraine', 'Dnipro',  'Yavornytskoho 10', '49000', 'CARD', '2026-08-12 11:30:00', '2026-08-12 11:30:00'),
+(22, 4, 230.00, true,  'Saturn',  'Client', '+380936667788', 'saturn@gmail.com',  'Ukraine', 'Lviv',    'Shevchenka 80',    '79039', 'CARD', '2026-08-20 15:20:00', '2026-08-20 15:20:00'),
+(23, 1, 320.00, false, 'Uranus',  'Client', '+380507778899', 'uranus@gmail.com',  'Ukraine', 'Kyiv',    'Basseina 7',       '01004', 'CASH', '2026-08-22 18:00:00', '2026-08-22 18:00:00'),
+(17, 1, 290.00, true,  'Mercury', 'Client', '+380501112233', 'mercury@gmail.com', 'Ukraine', 'Kyiv',    'Khreshchatyk 12',  '01001', 'CARD', '2026-08-23 09:15:00', '2026-08-23 09:15:00'),
+(18, 2, 420.00, false, 'Venus',   'Client', '+380672223344', 'venus@gmail.com',   'Ukraine', 'Lviv',    'Horodotska 45',    '79000', 'CASH', '2026-08-23 11:30:00', '2026-08-23 11:30:00'),
+(19, 3, 135.00, true,  'Earth',   'Client', '+380933334455', 'earth@gmail.com',   'Ukraine', 'Odesa',   'Deribasivska 3',   '65000', 'CARD', '2026-08-24 14:00:00', '2026-08-24 14:00:00'),
+(20, 1, 620.00, true,  'Mars',    'Client', '+380504445566', 'IamGod@gmail.com',  'Ukraine', 'Kharkiv', 'Sumska 21',        '61000', 'CARD', '2026-08-24 16:20:00', '2026-08-24 16:20:00'),
+(21, 4, 180.00, false, 'Jupiter', 'Client', '+380675556677', 'jupiter@gmail.com', 'Ukraine', 'Dnipro',  'Yavornytskoho 10', '49000', 'CASH', '2026-08-25 10:45:00', '2026-08-25 10:45:00'),
+(22, 2, 750.00, true,  'Saturn',  'Client', '+380936667788', 'saturn@gmail.com',  'Ukraine', 'Lviv',    'Shevchenka 80',    '79039', 'CARD', '2026-08-25 15:10:00', '2026-08-25 15:10:00'),
+(23, 3, 310.00, true,  'Uranus',  'Client', '+380507778899', 'uranus@gmail.com',  'Ukraine', 'Kyiv',    'Basseina 7',       '01004', 'CASH', '2026-08-26 12:00:00', '2026-08-26 12:00:00'),
+(24, 1, 540.00, false, 'Neptune', 'Client', '+380678889900', 'neptune@gmail.com', 'Ukraine', 'Vinnytsia','Soborna 22',       '21000', 'CARD', '2026-08-26 17:35:00', '2026-08-26 17:35:00'),
+(17, 2, 210.00, true,  'Mercury', 'Client', '+380501112233', 'mercury@gmail.com', 'Ukraine', 'Kyiv',    'Khreshchatyk 12',  '01001', 'CARD', '2026-08-27 11:20:00', '2026-08-27 11:20:00'),
+(18, 4, 490.00, true,  'Venus',   'Client', '+380672223344', 'venus@gmail.com',   'Ukraine', 'Lviv',    'Horodotska 45',    '79000', 'CARD', '2026-08-27 14:50:00', '2026-08-27 14:50:00'),
+(19, 1, 160.00, false, 'Earth',   'Client', '+380933334455', 'earth@gmail.com',   'Ukraine', 'Odesa',   'Deribasivska 3',   '65000', 'CASH', '2026-09-01 09:30:00', '2026-09-01 09:30:00'),
+(20, 3, 380.00, true,  'Mars',    'Client', '+380504445566', 'IamGod@gmail.com',  'Ukraine', 'Kharkiv', 'Sumska 21',        '61000', 'CARD', '2026-09-02 13:15:00', '2026-09-02 13:15:00'),
+(21, 2, 600.00, true,  'Jupiter', 'Client', '+380675556677', 'jupiter@gmail.com', 'Ukraine', 'Dnipro',  'Yavornytskoho 10', '49000', 'CARD', '2026-09-03 16:40:00', '2026-09-03 16:40:00'),
+(22, 1, 275.00, false, 'Saturn',  'Client', '+380936667788', 'saturn@gmail.com',  'Ukraine', 'Lviv',    'Shevchenka 80',    '79039', 'CASH', '2026-09-04 10:05:00', '2026-09-04 10:05:00'),
+(23, 4, 820.00, true,  'Uranus',  'Client', '+380507778899', 'uranus@gmail.com',  'Ukraine', 'Kyiv',    'Basseina 7',       '01004', 'CARD', '2026-09-05 18:25:00', '2026-09-05 18:25:00');
 
-
-
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (1, 1, 150.00, 1, '2026-07-15 10:00:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (2, 2, 171.00, 2, '2026-07-22 14:30:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (3, 3, 120.00, 1, '2026-07-28 16:45:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (4, 4, 450.00, 1, '2026-08-05 09:00:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (5, 3, 240.00, 2, '2026-08-12 11:30:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (5, 7, 300.00, 1, '2026-08-12 11:30:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (6, 1, 150.00, 1, '2026-08-20 15:20:00');
-INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES (7, 7, 320.00, 1, '2026-08-22 18:00:00');
+INSERT INTO order_rows (order_id, appliance_id, amount, number, created_at) VALUES
+                                                                                (1,  1, 150.00, 1, '2026-07-15 10:00:00'),
+                                                                                (2,  2, 171.00, 2, '2026-07-22 14:30:00'),
+                                                                                (3,  3, 120.00, 1, '2026-07-28 16:45:00'),
+                                                                                (4,  4, 450.00, 1, '2026-08-05 09:00:00'),
+                                                                                (5,  3, 240.00, 2, '2026-08-12 11:30:00'),
+                                                                                (5,  7, 300.00, 1, '2026-08-12 11:30:00'),
+                                                                                (6,  1, 150.00, 1, '2026-08-20 15:20:00'),
+                                                                                (7,  7, 320.00, 1, '2026-08-22 18:00:00'),
+                                                                                (8,  2, 290.00, 1, '2026-08-23 09:15:00'),
+                                                                                (9,  3, 420.00, 2, '2026-08-23 11:30:00'),
+                                                                                (10, 1, 135.00, 1, '2026-08-24 14:00:00'),
+                                                                                (11, 4, 620.00, 1, '2026-08-24 16:20:00'),
+                                                                                (12, 5, 180.00, 1, '2026-08-25 10:45:00'),
+                                                                                (13, 6, 750.00, 2, '2026-08-25 15:10:00'),
+                                                                                (14, 7, 310.00, 1, '2026-08-26 12:00:00'),
+                                                                                (15, 2, 540.00, 2, '2026-08-26 17:35:00'),
+                                                                                (16, 1, 210.00, 1, '2026-08-27 11:20:00'),
+                                                                                (17, 4, 490.00, 1, '2026-08-27 14:50:00'),
+                                                                                (18, 3, 160.00, 1, '2026-09-01 09:30:00'),
+                                                                                (19, 6, 380.00, 1, '2026-09-02 13:15:00'),
+                                                                                (20, 5, 600.00, 2, '2026-09-03 16:40:00'),
+                                                                                (21, 7, 275.00, 1, '2026-09-04 10:05:00'),
+                                                                                (22, 2, 820.00, 2, '2026-09-05 18:25:00');

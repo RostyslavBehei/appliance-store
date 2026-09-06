@@ -23,15 +23,16 @@ public interface ApplianceRepository extends JpaRepository<Appliance, Long> {
     Page<Appliance> findByManufacturerName(String manufacturerName, Pageable pageable);
 
     @Query("""
-SELECT a FROM Appliance a WHERE
-(:name IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', :name, '%'))) AND
-(:category IS NULL OR a.category = :category) AND
-(:manufacturerName IS NULL OR LOWER(a.manufacturer.name) LIKE LOWER(CONCAT('%', :manufacturerName, '%'))) AND
-(:powerType IS NULL OR a.powerType = :powerType) AND
-(:power IS NULL OR a.power = :power) AND
-(:minPrice IS NULL OR a.price >= :minPrice) AND
-(:maxPrice IS NULL OR a.price <= :maxPrice)
-""")
+        SELECT a FROM Appliance a 
+        JOIN a.manufacturer m 
+        WHERE (cast(:name as string) IS NULL OR LOWER(a.name) LIKE LOWER(CONCAT('%', cast(:name as string), '%')))
+          AND (cast(:category as string) IS NULL OR a.category = :category)
+          AND (cast(:manufacturerName as string) IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', cast(:manufacturerName as string), '%')))
+          AND (cast(:powerType as string) IS NULL OR a.powerType = :powerType)
+          AND (:power IS NULL OR a.power = :power)
+          AND (:minPrice IS NULL OR a.price >= :minPrice)
+          AND (:maxPrice IS NULL OR a.price <= :maxPrice)
+    """)
     Page<Appliance> findAllWithFilter(
             @Param("name") String name,
             @Param("category") Category category,

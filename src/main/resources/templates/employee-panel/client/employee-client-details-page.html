@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{employee.client_details.page_title}">Client Details - Employee Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+
+    <div th:replace="~{employee-panel/employee-sidebar :: sidebar}"></div>
+
+    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+
+        <div class="mb-4">
+            <a th:href="@{/employee-panel/clients}" class="text-decoration-none text-muted small d-inline-flex align-items-center mb-2">
+                <i class="ri-arrow-left-line me-1"></i> <span th:text="#{employee.client_details.back}">Back to Clients</span>
+            </a>
+            <h3 class="fw-bold mb-0 text-dark">
+                <span th:text="#{employee.client_details.title}">Client Profile:</span>
+                <span class="text-primary" th:text="${(client.firstName() != null ? client.firstName() : '') + ' ' + (client.lastName() != null ? client.lastName() : '')}">John Doe</span>
+            </h3>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+                            <i class="ri-user-line fs-2"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-1" th:text="${(client.firstName() != null ? client.firstName() : '') + ' ' + (client.lastName() != null ? client.lastName() : '')}">John Doe</h5>
+                        <p class="text-muted small mb-3" th:text="'Client ID #' + ${client.id()}">Client ID #1</p>
+
+                        <div class="text-start border-top pt-3">
+                            <div class="mb-3">
+                                <span class="text-muted small fw-bold text-uppercase d-block" th:text="#{employee.clients.table.email}">Email</span>
+                                <span class="fw-medium text-dark" th:text="${client.email()}">client@example.com</span>
+                            </div>
+
+                            <div class="mb-3" th:if="${client.middleName() != null and !#strings.isEmpty(client.middleName())}">
+                                <span class="text-muted small fw-bold text-uppercase d-block">Middle Name</span>
+                                <span class="fw-medium text-dark" th:text="${client.middleName()}">Middle</span>
+                            </div>
+
+                            <div class="mb-3" th:if="${client.birthday() != null}">
+                                <span class="text-muted small fw-bold text-uppercase d-block">Birthday</span>
+                                <span class="fw-medium text-dark" th:text="${#temporals.format(client.birthday(), 'dd MMMM yyyy')}">01 Jan 2000</span>
+                            </div>
+
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase d-block mb-1">Status</span>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${client.enabled()} ? 'bg-success bg-opacity-10 text-success border border-success-subtle' : 'bg-secondary bg-opacity-10 text-secondary border border-secondary-subtle'"
+                                      th:text="${client.enabled()} ? 'Active' : 'Disabled'">Active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-header bg-white border-bottom pt-4 pb-3 px-4">
+                        <h5 class="mb-0 fw-bold text-dark">
+                            <i class="ri-history-line text-primary me-2"></i><span th:text="#{employee.client_details.orders_history}">Order History</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-borderless align-middle mb-0">
+                                <thead class="table-light text-muted small">
+                                <tr>
+                                    <th class="ps-4">Order ID</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th class="text-end pe-4">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:if="${orders == null or #lists.isEmpty(orders.content)}">
+                                    <td colspan="5" class="text-center text-muted py-4" th:text="#{employee.client_details.no_orders}">No orders found for this client.</td>
+                                </tr>
+                                <tr th:each="ord : ${orders?.content}">
+                                    <td class="ps-4 fw-bold text-primary" th:text="'#' + ${ord.id()}">#1001</td>
+                                    <td class="text-muted small" th:text="${ord.createdAt() != null ? #temporals.format(ord.createdAt(), 'dd MMM yyyy, HH:mm') : '-'}">10 Apr 2026</td>
+                                    <td>
+                                        <span class="badge rounded-pill"
+                                              th:classappend="${ord.approved()} ? 'bg-success bg-opacity-10 text-success border border-success-subtle' : 'bg-warning bg-opacity-10 text-warning border border-warning-subtle'"
+                                              th:text="${ord.approved()} ? #{admin.orders.status.approved} : #{admin.orders.status.pending}">
+                                        </span>
+                                    </td>
+                                    <td class="fw-bold text-dark" th:text="${ord.totalPrice() != null ? #numbers.formatDecimal(ord.totalPrice(), 1, 2) + ' $' : '0.00 $'}">0.00 $</td>
+                                    <td class="text-end pe-4">
+                                        <a th:href="@{/employee-panel/orders/{id}(id=${ord.id()})}" class="btn btn-sm btn-light border rounded-pill px-3">
+                                            <i class="ri-eye-line me-1"></i> <span th:text="#{order.list.button.details}">Details</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div th:if="${orders != null and orders.totalPages > 1}" class="card-footer bg-white border-top p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <span class="small text-muted">
+                            Showing page <span class="fw-bold" th:text="${orders.number + 1}">1</span> of <span class="fw-bold" th:text="${orders.totalPages}">5</span>
+                        </span>
+
+                        <nav>
+                            <ul class="pagination pagination-sm mb-0">
+                                <li class="page-item" th:classappend="${orders.first} ? 'disabled'">
+                                    <a class="page-link rounded-start-pill" th:href="@{/employee-panel/clients/{id}(id=${client.id()}, page=${orders.number - 1})}">
+                                        <i class="ri-arrow-left-s-line"></i>
+                                    </a>
+                                </li>
+
+                                <li class="page-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                                    th:classappend="${i == orders.number} ? 'active'">
+                                    <a class="page-link" th:href="@{/employee-panel/clients/{id}(id=${client.id()}, page=${i})}" th:text="${i + 1}">1</a>
+                                </li>
+
+                                <li class="page-item" th:classappend="${orders.last} ? 'disabled'">
+                                    <a class="page-link rounded-end-pill" th:href="@{/employee-panel/clients/{id}(id=${client.id()}, page=${orders.number + 1})}">
+                                        <i class="ri-arrow-right-s-line"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ModelAndView handleAccessDeniedException(AccessDeniedException ex) {
         ModelAndView modelAndView = new ModelAndView("error/403");
-        modelAndView.addObject("message", "Access Denied. You do not have permission to view this page.");
+        modelAndView.addObject("message", ex.getMessage());
         modelAndView.setStatus(HttpStatus.FORBIDDEN);
         return modelAndView;
     }
@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ModelAndView handleNoResourceFound(NoResourceFoundException ex) {
         ModelAndView modelAndView = new ModelAndView("error/404");
-        modelAndView.addObject("message", "The requested resource was not found.");
+        modelAndView.addObject("message", ex.getMessage());
         modelAndView.setStatus(HttpStatus.NOT_FOUND);
         return modelAndView;
     }
@@ -45,7 +45,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ModelAndView handleGenericException(Exception ex) {
         ModelAndView modelAndView = new ModelAndView("error/500");
-        modelAndView.addObject("message", ex.getMessage());
+        modelAndView.addObject("message", "Oops! Something went wrong on our server. Please try again later.");
         modelAndView.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         return modelAndView;
     }

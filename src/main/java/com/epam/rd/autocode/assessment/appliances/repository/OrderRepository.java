@@ -25,4 +25,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("startDate")LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
     long countByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    long countByApproved(boolean value);
 }

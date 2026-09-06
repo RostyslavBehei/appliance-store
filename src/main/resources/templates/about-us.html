@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{about.page_title}">About Us - Appliance Store</title>
+    <link rel="icon" href="data:,">
+
+    <!-- Bootstrap 5 & Remix Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+
+    <style>
+        .feature-icon-box {
+            width: 64px;
+            height: 64px;
+            border-radius: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(37, 99, 235, 0.08);
+            color: #2563eb;
+            padding: 0.5rem 1rem;
+            border-radius: 50rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-light d-flex flex-column min-vh-100">
+
+<header th:insert="~{header::navy}"></header>
+
+<main class="flex-grow-1">
+
+    <!-- Hero Section -->
+    <section class="py-5 bg-white border-bottom">
+        <div class="container py-4 text-center">
+            <div class="hero-badge mb-3">
+                <i class="ri-store-2-line"></i>
+                <span th:text="#{about.hero.badge}">Your Trusted Appliance Partner</span>
+            </div>
+            <h1 class="display-5 fw-bold text-dark mb-3" th:text="#{about.hero.title}">Bringing Innovation to Your Home</h1>
+            <p class="lead text-muted mx-auto mb-4" style="max-width: 720px;" th:text="#{about.hero.subtitle}">
+                We provide reliable, energy-efficient, and top-tier home appliances from world-leading manufacturers to elevate your everyday comfort.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a th:href="@{/}" class="btn btn-primary btn-lg rounded-pill px-4 fw-medium shadow-sm">
+                    <i class="ri-shopping-bag-line me-1"></i> <span th:text="#{about.hero.btn_catalog}">Browse Catalog</span>
+                </a>
+                <a th:href="@{/contact}" class="btn btn-light border btn-lg rounded-pill px-4 fw-medium">
+                    <span th:text="#{about.hero.btn_contact}">Contact Us</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Metrics / Stats -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 justify-content-center">
+                        <h2 class="fw-bold text-primary mb-1">10k+</h2>
+                        <span class="text-muted small" th:text="#{about.stats.customers}">Happy Customers</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 justify-content-center">
+                        <h2 class="fw-bold text-primary mb-1">500+</h2>
+                        <span class="text-muted small" th:text="#{about.stats.products}">Certified Products</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 justify-content-center">
+                        <h2 class="fw-bold text-primary mb-1">50+</h2>
+                        <span class="text-muted small" th:text="#{about.stats.brands}">Partner Brands</span>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100 justify-content-center">
+                        <h2 class="fw-bold text-primary mb-1">24/7</h2>
+                        <span class="text-muted small" th:text="#{about.stats.support}">Customer Care</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Values / Why Us -->
+    <section class="py-5 bg-white border-top border-bottom">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-dark mb-2" th:text="#{about.values.title}">Why Choose Us?</h2>
+                <p class="text-muted small mb-0" th:text="#{about.values.subtitle}">Quality, sustainability, and seamless shopping experience.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-light">
+                        <div class="feature-icon-box bg-primary bg-opacity-10 text-primary mb-3">
+                            <i class="ri-shield-check-line fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2" th:text="#{about.values.warranty_title}">Official Warranty</h5>
+                        <p class="text-muted small mb-0" th:text="#{about.values.warranty_desc}">
+                            Every appliance in our catalog is authentic, certified, and protected by direct manufacturer warranty coverage.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-light">
+                        <div class="feature-icon-box bg-success bg-opacity-10 text-success mb-3">
+                            <i class="ri-truck-line fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2" th:text="#{about.values.delivery_title}">Fast & Safe Delivery</h5>
+                        <p class="text-muted small mb-0" th:text="#{about.values.delivery_desc}">
+                            We ensure prompt doorstep dispatch with specialized care for both heavy equipment and small appliances.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-light">
+                        <div class="feature-icon-box bg-info bg-opacity-10 text-info mb-3">
+                            <i class="ri-customer-service-2-line fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2" th:text="#{about.values.experts_title}">Expert Consultation</h5>
+                        <p class="text-muted small mb-0" th:text="#{about.values.experts_desc}">
+                            Our skilled team is always ready to help you choose the right power specifications, dimensions, and energy classes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<div th:insert="~{footer::footer}"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

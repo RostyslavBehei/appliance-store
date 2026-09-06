@@ -1,5 +1,6 @@
 package com.epam.rd.autocode.assessment.appliances.service;
 
+import com.epam.rd.autocode.assessment.appliances.dto.orders.OrderCheckoutRequest;
 import com.epam.rd.autocode.assessment.appliances.dto.orders.OrderResponse;
 import com.epam.rd.autocode.assessment.appliances.dto.orders.OrderSummaryResponse;
 import org.springframework.data.domain.Page;
@@ -12,5 +13,5 @@ public interface OrderService {
     Page<OrderResponse> getClientOrders(String clientEmail, Pageable pageable);
     OrderResponse getOrderById(Long orderId);
     void approveOrder(Long orderId);
-    void checkout(String clientEmail);
+    void checkout(String clientEmail, OrderCheckoutRequest request);
 }

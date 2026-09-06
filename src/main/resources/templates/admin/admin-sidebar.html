@@ -5,7 +5,7 @@
 <div th:fragment="sidebar" class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end shadow-sm" style="width: 280px; min-height: 100vh; position: sticky; top: 0;">
 
     <!-- Logo -->
-    <a href="/admin" class="d-flex align-items-center mb-4 me-md-auto text-decoration-none">
+    <a th:href="@{/admin}" class="d-flex align-items-center mb-4 me-md-auto text-decoration-none">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
             <rect x="4" y="9" width="16" height="10"></rect>
@@ -55,10 +55,23 @@
         </li>
     </ul>
 
-    <hr class="text-muted opacity-25 mt-4">
+    <hr class="text-muted opacity-25 mt-4 mb-3">
+
+    <!-- Language Switcher -->
+    <div class="d-flex align-items-center justify-content-between px-2 mb-3">
+        <span class="small text-muted fw-medium d-flex align-items-center">
+            <i class="ri-global-line me-1"></i> <span th:text="#{sidebar.language}">Language</span>
+        </span>
+        <div class="btn-group btn-group-sm" role="group">
+            <a th:href="@{''(lang='uk')}" class="btn rounded-pill px-2 py-1 fw-medium"
+               th:classappend="${#locale.language == 'uk' ? 'btn-primary text-white' : 'btn-light border text-muted'}">UA</a>
+            <a th:href="@{''(lang='en')}" class="btn rounded-pill px-2 py-1 fw-medium ms-1"
+               th:classappend="${#locale.language == 'en' ? 'btn-primary text-white' : 'btn-light border text-muted'}">EN</a>
+        </div>
+    </div>
 
     <!-- Back to Store -->
-    <div class="mt-2">
+    <div class="mt-auto">
         <a th:href="@{/}" class="btn btn-light border text-dark w-100 d-flex align-items-center justify-content-center fw-medium shadow-sm transition-all">
             <i class="ri-arrow-go-back-line me-2 text-primary"></i> <span th:text="#{admin.sidebar.back_to_store}">Back to Store</span>
         </a>

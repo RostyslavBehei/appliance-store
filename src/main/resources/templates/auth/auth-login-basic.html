@@ -14,6 +14,31 @@
     <!-- Main CSS -->
     <link rel="stylesheet" th:href="@{/css/main.css}">
 
+    <style>
+        .login-cart {
+            border-radius: 1.5rem;
+            border: none;
+        }
+        .form-floating > .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.15);
+        }
+        .form-floating > .form-control {
+            border-radius: 0.75rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+        }
+        .login-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background-color: #eff6ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body class="bg-light d-flex flex-column min-vh-100">
 
@@ -24,8 +49,8 @@
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-5">
 
-                <!-- Login cart -->
-                <div class="cart login-cart shadow-lg p-4 p-sm-5">
+                <!-- Login card -->
+                <div class="card login-cart shadow-lg p-4 p-sm-5 bg-white">
 
                     <div class="text-center mb-4">
                         <div class="login-icon-wrapper mb-3">
@@ -36,29 +61,69 @@
                     </div>
 
                     <!-- Messages block -->
+                    <!-- Invalid credentials -->
                     <div th:if="${param.error}" class="alert alert-danger border-0 rounded-3 d-flex align-items-center" role="alert">
                         <i class="ri-error-warning-line fs-5 me-2"></i>
                         <div th:text="#{login.error}">Invalid email or password.</div>
                     </div>
 
+                    <!-- Account not activated / Disabled -->
+                    <div th:if="${param.disabled}" class="alert alert-warning border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-mail-unread-line fs-5 me-2"></i>
+                        <div th:text="#{login.disabled}">Your account is not activated. Please check your email and verify your account.</div>
+                    </div>
+
+                    <!-- Account locked / Blocked -->
+                    <div th:if="${param.locked}" class="alert alert-danger border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-user-forbid-line fs-5 me-2"></i>
+                        <div th:text="#{login.locked}">Your account has been blocked. Please contact support.</div>
+                    </div>
+
+                    <!-- Logout Success -->
                     <div th:if="${param.logout}" class="alert alert-success border-0 rounded-3 d-flex align-items-center" role="alert">
                         <i class="ri-checkbox-circle-line fs-5 me-2"></i>
                         <div th:text="#{login.logout_success}">You successfully logged out.</div>
                     </div>
 
-                    <form th:action="@{/login}" method="post">
+                    <!-- Registration Success -->
+                    <div th:if="${param.registered}" class="alert alert-success border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-checkbox-circle-line fs-5 me-2"></i>
+                        <div th:text="#{login.register_success}">Registration successful! Please sign in.</div>
+                    </div>
+
+                    <!-- Verification / Activation Success -->
+                    <div th:if="${param.verified}" class="alert alert-success border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-shield-check-line fs-4 me-2 text-success"></i>
+                        <div th:text="#{login.verified_success}">Your account has been successfully verified and activated! Please sign in.</div>
+                    </div>
+
+                    <!-- OAuth2 Failure / Cancellation Alert -->
+                    <div th:if="${param.oauth2_error}" class="alert alert-warning border-0 rounded-3 d-flex align-items-center" role="alert">
+                        <i class="ri-error-warning-line fs-5 me-2 flex-shrink-0"></i>
+                        <div>
+                        <span th:if="${param.oauth2_error[0] == 'access_denied'}" th:text="#{login.oauth2.access_denied}">
+                                Sign-in was canceled or access was denied.
+                        </span>
+                            <span th:unless="${param.oauth2_error[0] == 'access_denied'}" th:text="#{login.oauth2.generic_error}">
+                                Failed to authenticate with third-party service. Please try again or use your password.
+                        </span>
+                        </div>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form th:action="@{/login}" method="post" th:object="${loginRequest}" class="js-save-form" id="loginForm">
 
                         <!-- Email -->
                         <div class="form-floating mb-3">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required autofocus>
-                                <label for="email" class="text-muted">
+                            <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="name@example.com" required autofocus>
+                            <label for="email" class="text-muted">
                                 <i class="ri-mail-line me-1"></i> <span th:text="#{login.form.email}">Email</span>
                             </label>
                         </div>
 
                         <!-- Password -->
                         <div class="form-floating mb-4">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                            <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="Password" required>
                             <label for="password" class="text-muted">
                                 <i class="ri-lock-password-line me-1"></i> <span th:text="#{login.form.password}">Password</span>
                             </label>
@@ -70,7 +135,7 @@
                                 <input type="checkbox" class="form-check-input" id="remember-me" name="remember-me">
                                 <label class="form-check-label text-muted" for="remember-me" th:text="#{login.form.remember}">Remember me</label>
                             </div>
-                            <a href="/forgot-password" class="text-decoration-none small fw-medium" th:text="#{login.form.forgot_password}">Forgot password?</a>
+                            <a th:href="@{/forgot-password}" class="text-decoration-none small fw-medium" th:text="#{login.form.forgot_password}">Forgot password?</a>
                         </div>
 
                         <!-- Submit button -->
@@ -79,11 +144,28 @@
                         </button>
                     </form>
 
-                    <!-- Registration -->
+                    <!-- Registration Link -->
                     <div class="text-center mt-4 pt-3 border-top">
                         <span class="text-muted" th:text="#{login.form.no_account}">Don't have an account?</span>
-                        <a href="/register" class="text-decoration-none fw-bold ms-1" th:text="#{login.form.register_link}">Sign in</a>
+                        <a th:href="@{/register}" class="text-decoration-none fw-bold ms-1" th:text="#{login.form.register_link}">Sign up</a>
                     </div>
+
+                    <!-- Splitter -->
+                    <div class="position-relative my-4">
+                        <hr class="text-muted opacity-25">
+                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small" th:text="#{login.or}">or</span>
+                    </div>
+
+                    <!-- Google OAuth2 Button -->
+                    <a th:href="@{/oauth2/authorization/google}" class="btn btn-outline-secondary w-100 rounded-pill py-2 fw-medium d-flex align-items-center justify-content-center border">
+                        <svg class="me-2" width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        <span th:text="#{login.btn.google}">Sign in with Google</span>
+                    </a>
 
                 </div>
             </div>
@@ -94,5 +176,6 @@
 <div th:insert="~{footer::footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/js/form-saver.js}"></script>
 </body>
 </html>

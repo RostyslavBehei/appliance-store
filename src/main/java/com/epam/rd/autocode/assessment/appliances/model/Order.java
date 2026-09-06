@@ -45,6 +45,9 @@ public class Order {
     @Builder.Default
     private Boolean approved = false;
 
+    @Embedded
+    private ShippingDetails shippingDetails;
+
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;

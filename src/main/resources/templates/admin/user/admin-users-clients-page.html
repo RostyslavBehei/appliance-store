@@ -45,6 +45,9 @@
             <!-- Filter & Search Toolbar -->
             <div class="card-header bg-white border-bottom pt-4 pb-3 px-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <form th:action="@{/admin/users/clients}" method="get" class="row g-2 align-items-center flex-grow-1 m-0">
+                    <!-- Фіксуємо розмір сторінки з поточного запиту або пагінації -->
+                    <input type="hidden" name="size" th:value="${clientsPage.size}">
+
                     <!-- Search Input -->
                     <div class="col-md-6 position-relative">
                         <i class="ri-search-line search-icon"></i>
@@ -55,7 +58,7 @@
                     <!-- Sort -->
                     <div class="col-md-4">
                         <select name="sort" class="form-select bg-light border-0">
-                            <option value="newest" th:selected="${sort == 'newest'}" th:text="#{admin.clients.sort.newest}">Newest First</option>
+                            <option value="newest" th:selected="${sort == null or sort == 'newest'}" th:text="#{admin.clients.sort.newest}">Newest First</option>
                             <option value="oldest" th:selected="${sort == 'oldest'}" th:text="#{admin.clients.sort.oldest}">Oldest First</option>
                             <option value="nameAsc" th:selected="${sort == 'nameAsc'}" th:text="#{admin.clients.sort.name_asc}">Name (A-Z)</option>
                         </select>
@@ -103,14 +106,16 @@
                             <td class="ps-4 fw-medium text-dark">
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-initial bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-weight: bold;">
-                                        <span th:text="${#strings.substring(client.firstName,0,1) + #strings.substring(client.lastName,0,1)}">JD</span>
+                                        <span th:text="${#strings.substring(client.firstName, 0, 1) + (client.lastName != null and !client.lastName.isEmpty() ? #strings.substring(client.lastName, 0, 1) : '')}">JD</span>
                                     </div>
-                                    <span th:text="${client.firstName + ' ' + client.lastName}">John Doe</span>
+                                    <span th:text="${client.firstName + ' ' + (client.lastName != null ? client.lastName : '')}">John Doe</span>
                                 </div>
                             </td>
-                            <td><span class="text-muted small" th:text="${#temporals.format(client.birthday, 'dd MMM yyyy')}">10 Apr 1990</span></td>
                             <td>
-                                <!-- Show Email & Department -->
+                                <span class="text-muted small" th:if="${client.birthday != null}" th:text="${#temporals.format(client.birthday, 'dd MMM yyyy')}">10 Apr 1990</span>
+                                <span class="text-muted small" th:if="${client.birthday == null}">—</span>
+                            </td>
+                            <td>
                                 <div class="small fw-medium" th:text="${client.email}">user@email.com</div>
                                 <span class="badge bg-light text-dark border mt-1" th:text="${client.cart}">5326-1111</span>
                             </td>
@@ -144,18 +149,24 @@
             </div>
 
             <!-- Pagination -->
-            <div class="card-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center" th:if="${!clientsPage.empty}">
+            <div class="card-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center" th:if="${!clientsPage.empty and clientsPage.totalPages > 1}">
                 <span class="text-muted small" th:text="#{admin.clients.pagination.showing(${clientsPage.number + 1}, ${clientsPage.totalPages})}">Showing page 1 of 5</span>
                 <nav>
                     <ul class="pagination pagination-sm mb-0">
                         <li class="page-item" th:classappend="${clientsPage.first} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/users/clients(page=${clientsPage.number - 1}, keyword=${keyword}, sort=${sort})}"><i class="ri-arrow-left-s-line"></i></a>
+                            <a class="page-link" th:href="@{/admin/users/clients(page=${clientsPage.number - 1}, size=${clientsPage.size}, keyword=${keyword}, sort=${sort})}">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </a>
                         </li>
+
                         <li class="page-item" th:each="i : ${#numbers.sequence(0, clientsPage.totalPages - 1)}" th:classappend="${clientsPage.number == i} ? 'active'">
-                            <a class="page-link" th:href="@{/admin/users/clients(page=${i}, keyword=${keyword}, sort=${sort})}" th:text="${i + 1}">1</a>
+                            <a class="page-link" th:href="@{/admin/users/clients(page=${i}, size=${clientsPage.size}, keyword=${keyword}, sort=${sort})}" th:text="${i + 1}">1</a>
                         </li>
+
                         <li class="page-item" th:classappend="${clientsPage.last} ? 'disabled'">
-                            <a class="page-link" th:href="@{/admin/users/clients(page=${clientsPage.number + 1}, keyword=${keyword}, sort=${sort})}"><i class="ri-arrow-right-s-line"></i></a>
+                            <a class="page-link" th:href="@{/admin/users/clients(page=${clientsPage.number + 1}, size=${clientsPage.size}, keyword=${keyword}, sort=${sort})}">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </a>
                         </li>
                     </ul>
                 </nav>

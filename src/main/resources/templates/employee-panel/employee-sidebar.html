@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="sidebar" class="d-flex flex-column flex-shrink-0 p-3 bg-white border-end shadow-sm" style="width: 280px; min-height: 100vh; position: sticky; top: 0;">
+
+    <!-- Logo & Workspace Badge -->
+    <a th:href="@{/employee-panel}" class="d-flex align-items-center mb-3 me-md-auto text-decoration-none">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect>
+            <rect x="4" y="9" width="16" height="10"></rect>
+            <line x1="10" y1="4" x2="10" y2="9"></line>
+        </svg>
+        <span class="fs-4 ms-2 fw-bold text-dark">Appliance<strong class="text-primary">Store</strong></span>
+    </a>
+
+    <div class="mb-3 px-2">
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary-subtle rounded-pill px-3 py-1 small fw-medium d-inline-flex align-items-center">
+            <i class="ri-user-settings-line me-1"></i>
+            <span th:text="#{employee.sidebar.role}">Staff Workspace</span>
+        </span>
+    </div>
+
+    <hr class="mt-0 mb-4 text-muted opacity-25">
+
+    <!-- Navigation Links -->
+    <ul class="nav nav-pills flex-column mb-auto gap-2">
+
+        <!-- Analytics -->
+        <li class="nav-item">
+            <a th:href="@{/employee-panel}" class="nav-link d-flex align-items-center fw-medium"
+               th:classappend="${activePage == 'dashboard' ? 'active bg-primary text-white shadow-sm' : 'link-dark'}">
+                <i class="ri-bar-chart-box-line fs-5 me-3"></i>
+                <span th:text="#{employee.sidebar.analytics}">Analytics</span>
+            </a>
+        </li>
+
+        <!-- Orders Management -->
+        <li class="nav-item">
+            <a th:href="@{/employee-panel/orders}" class="nav-link d-flex align-items-center fw-medium"
+               th:classappend="${activePage == 'orders' ? 'active bg-primary text-white shadow-sm' : 'link-dark'}">
+                <i class="ri-shopping-cart-2-line fs-5 me-3"></i>
+                <span th:text="#{employee.sidebar.orders}">Orders</span>
+            </a>
+        </li>
+
+        <!-- Appliances Catalog -->
+        <li>
+            <a th:href="@{/employee-panel/appliances}" class="nav-link d-flex align-items-center fw-medium"
+               th:classappend="${activePage == 'appliances' ? 'active bg-primary text-white shadow-sm' : 'link-dark'}">
+                <i class="ri-fridge-line fs-5 me-3"></i>
+                <span th:text="#{employee.sidebar.appliances}">Appliances</span>
+            </a>
+        </li>
+
+        <!-- Manufacturers / Brands -->
+        <li>
+            <a th:href="@{/employee-panel/manufacturers}" class="nav-link d-flex align-items-center fw-medium"
+               th:classappend="${activePage == 'manufacturers' ? 'active bg-primary text-white shadow-sm' : 'link-dark'}">
+                <i class="ri-building-4-line fs-5 me-3"></i>
+                <span th:text="#{employee.sidebar.manufacturers}">Manufacturers</span>
+            </a>
+        </li>
+
+        <!-- Clients Lookup -->
+        <li>
+            <a th:href="@{/employee-panel/clients}" class="nav-link d-flex align-items-center fw-medium"
+               th:classappend="${activePage == 'clients' ? 'active bg-primary text-white shadow-sm' : 'link-dark'}">
+                <i class="ri-contacts-book-line fs-5 me-3"></i>
+                <span th:text="#{employee.sidebar.clients}">Clients</span>
+            </a>
+        </li>
+    </ul>
+
+    <hr class="text-muted opacity-25 mt-4 mb-3">
+
+    <!-- Language Switcher -->
+    <div class="d-flex align-items-center justify-content-between px-2 mb-3">
+        <span class="small text-muted fw-medium d-flex align-items-center">
+            <i class="ri-global-line me-1"></i> <span th:text="#{sidebar.language}">Language</span>
+        </span>
+        <div class="btn-group btn-group-sm" role="group">
+            <a th:href="@{''(lang='uk')}" class="btn rounded-pill px-2 py-1 fw-medium"
+               th:classappend="${#locale.language == 'uk' ? 'btn-primary text-white' : 'btn-light border text-muted'}">UA</a>
+            <a th:href="@{''(lang='en')}" class="btn rounded-pill px-2 py-1 fw-medium ms-1"
+               th:classappend="${#locale.language == 'en' ? 'btn-primary text-white' : 'btn-light border text-muted'}">EN</a>
+        </div>
+    </div>
+
+    <!-- Back to Store -->
+    <div class="mt-auto">
+        <a th:href="@{/}" class="btn btn-light border text-dark w-100 d-flex align-items-center justify-content-center fw-medium shadow-sm transition-all">
+            <i class="ri-arrow-go-back-line me-2 text-primary"></i> <span th:text="#{employee.sidebar.back_to_store}">Back to Store</span>
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

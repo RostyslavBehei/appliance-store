@@ -12,6 +12,7 @@ public interface UserService {
     void updatePassword(String currentEmail, UserPasswordChangeRequest request);
     void resetPassword(String token, UserPasswordResetRequest request);
     void updateEmail(String currentEmail, UserEmailChangeRequest request);
+    void verifyAccount(String token);
     void deleteUserById(Long id);
     void deleteUserByEmail(String userEmail);
 }

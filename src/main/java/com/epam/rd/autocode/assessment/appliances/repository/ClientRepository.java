@@ -14,6 +14,7 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client,Integer> {
     Optional<Client> findById(Long id);
     boolean existsByCart(String cart);
+    Optional<Client> findByCart(String cart);
 
     @Query("SELECT c FROM Client c WHERE " +
             "LOWER(c.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +

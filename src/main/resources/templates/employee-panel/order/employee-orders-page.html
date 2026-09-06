@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{employee.orders.page_title}">Orders Management - Employee Panel</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="icon" href="data:,">
+</head>
+<body class="bg-light">
+
+<div class="d-flex">
+
+    <div th:replace="~{employee-panel/employee-sidebar :: sidebar}"></div>
+
+    <main class="flex-grow-1 p-4" style="height: 100vh; overflow-y: auto;">
+
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h3 class="fw-bold mb-1 text-dark" th:text="#{employee.orders.title}">Orders Management</h3>
+                <p class="text-muted small mb-0" th:text="#{employee.orders.subtitle}">Review, verify customer details, and approve incoming orders.</p>
+            </div>
+
+            <div class="d-flex align-items-center bg-white px-3 py-2 rounded shadow-sm border-0">
+                <i class="ri-user-settings-line text-primary me-2 fs-5"></i>
+                <span class="text-muted fw-medium" th:text="${#authentication.name}">employee@store.com</span>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body p-3">
+                <form th:action="@{/employee-panel/orders}" method="get" class="row g-2 align-items-center">
+                    <input type="hidden" name="size" th:value="${size}">
+
+                    <div class="col-md-9 col-lg-10">
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                <i class="ri-search-line"></i>
+                            </span>
+                            <input type="text" name="keyword" th:value="${keyword}" class="form-control bg-light border-0 py-2"
+                                   th:placeholder="#{employee.orders.search_placeholder}">
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-lg-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill fw-medium">
+                            <span th:text="#{employee.orders.btn.filter}">Search</span>
+                        </button>
+                        <a th:if="${keyword != null and !#strings.isEmpty(keyword)}"
+                           th:href="@{/employee-panel/orders(size=${size})}"
+                           class="btn btn-light border rounded-pill px-3">
+                            <i class="ri-close-line"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-borderless align-middle mb-0">
+                        <thead class="table-light text-muted small border-bottom">
+                        <tr>
+                            <th class="ps-4">Order ID</th>
+                            <th>Created Date</th>
+                            <th>Client ID</th>
+                            <th>Status</th>
+                            <th>Total Amount</th>
+                            <th class="text-end pe-4">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr th:if="${orders == null or #lists.isEmpty(orders.content)}">
+                            <td colspan="6" class="text-center text-muted py-5">
+                                <i class="ri-inbox-line fs-1 d-block mb-2 text-secondary opacity-50"></i>
+                                <span th:text="#{employee.orders.empty}">No orders found.</span>
+                            </td>
+                        </tr>
+
+                        <tr th:each="order : ${orders?.content}">
+                            <td class="ps-4">
+                                <span class="fw-bold text-primary" th:text="'#' + ${order.id()}">#1045</span>
+                            </td>
+
+                            <td>
+                                <span class="text-muted small" th:text="${order.createdAt() != null ? #temporals.format(order.createdAt(), 'dd MMM yyyy, HH:mm') : '-'}">10 Apr 2026, 14:30</span>
+                            </td>
+
+                            <td>
+                                <span class="badge bg-light text-dark border px-2 py-1" th:text="'User #' + ${order.userId()}">User #1</span>
+                            </td>
+
+                            <td>
+                                <span class="badge rounded-pill"
+                                      th:classappend="${order.status()} ? 'bg-success bg-opacity-10 text-success border border-success-subtle' : 'bg-warning bg-opacity-10 text-warning border border-warning-subtle'"
+                                      th:text="${order.status()} ? #{admin.orders.status.approved} : #{admin.orders.status.pending}">
+                                </span>
+                            </td>
+
+                            <td class="fw-bold text-dark">
+                                <span th:text="${order.amount() != null ? #numbers.formatDecimal(order.amount(), 1, 2) : '0.00'}">0.00</span> $
+                            </td>
+
+                            <td class="text-end pe-4">
+                                <div class="d-inline-flex gap-2">
+                                    <form th:if="${!order.status()}" th:action="@{/employee-panel/orders/{id}/approve(id=${order.id()})}" method="post" class="m-0">
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 fw-medium">
+                                            <i class="ri-check-line me-1"></i> <span th:text="#{admin.orders.btn.approve}">Approve</span>
+                                        </button>
+                                    </form>
+
+                                    <a th:href="@{/employee-panel/orders/{id}(id=${order.id()})}" class="btn btn-sm btn-light border rounded-pill px-3 fw-medium">
+                                        <i class="ri-eye-line me-1"></i> <span th:text="#{order.list.button.details}">Details</span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div th:if="${orders != null and orders.totalPages > 1}" class="card-footer bg-white border-top p-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <span class="small text-muted">
+                    Showing page <span class="fw-bold" th:text="${orders.number + 1}">1</span> of <span class="fw-bold" th:text="${orders.totalPages}">5</span>
+                </span>
+
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        <li class="page-item" th:classappend="${orders.first} ? 'disabled'">
+                            <a class="page-link rounded-start-pill"
+                               th:href="@{/employee-panel/orders(page=${orders.number - 1}, size=${size}, keyword=${keyword})}"
+                               th:tabindex="${orders.first} ? -1 : 0"
+                               th:style="${orders.first} ? 'pointer-events: none;' : ''">
+                                <i class="ri-arrow-left-s-line"></i>
+                            </a>
+                        </li>
+
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, orders.totalPages - 1)}"
+                            th:classappend="${i == orders.number} ? 'active'">
+                            <a class="page-link"
+                               th:href="@{/employee-panel/orders(page=${i}, size=${size}, keyword=${keyword})}"
+                               th:text="${i + 1}">1</a>
+                        </li>
+
+                        <li class="page-item" th:classappend="${orders.last} ? 'disabled'">
+                            <a class="page-link rounded-end-pill"
+                               th:href="@{/employee-panel/orders(page=${orders.number + 1}, size=${size}, keyword=${keyword})}"
+                               th:tabindex="${orders.last} ? -1 : 0"
+                               th:style="${orders.last} ? 'pointer-events: none;' : ''">
+                                <i class="ri-arrow-right-s-line"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

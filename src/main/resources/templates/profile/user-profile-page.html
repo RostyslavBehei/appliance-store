@@ -115,11 +115,11 @@
                             <!-- Dynamic Block for Client -->
                             <th:block th:if="${isClient}">
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.isClient.discount_cart}">Discount Card</label>
+                                    <label class="form-label text-muted small mb-1" th:text="#{user.profile.menu.isClient.discount_cart}">Discount Cart</label>
                                     <div class="form-control bg-light border-0">
                                         <i class="ri-bank-card-line me-1 text-primary"></i>
 
-                                        <span th:text="${user.card} ?: #{user.profile.menu.isClient.discount_cart.isEmpty}"></span>
+                                        <span th:text="${user.cart} ?: #{user.profile.menu.isClient.discount_cart.isEmpty}"></span>
                                     </div>
                                 </div>
                             </th:block>

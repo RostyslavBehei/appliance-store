@@ -2,6 +2,7 @@ package com.epam.rd.autocode.assessment.appliances.dto.orders;
 
 import com.epam.rd.autocode.assessment.appliances.dto.appliance.ApplianceResponse;
 import com.epam.rd.autocode.assessment.appliances.dto.orderRow.OrderRowResponse;
+import com.epam.rd.autocode.assessment.appliances.dto.shippingDetails.ShippingDetailsResponse;
 import com.epam.rd.autocode.assessment.appliances.model.Order;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ public record OrderResponse(
         Set<OrderRowResponse> orderRowResponses,
         BigDecimal totalPrice,
         Boolean approved,
+        ShippingDetailsResponse shippingDetails,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -40,6 +42,17 @@ public record OrderResponse(
                         )).collect(Collectors.toSet()),
                 order.getTotalPrice(),
                 order.getApproved(),
+                order.getShippingDetails() == null ? null : new ShippingDetailsResponse(
+                        order.getShippingDetails().getContactFirstName(),
+                        order.getShippingDetails().getContactLastName(),
+                        order.getShippingDetails().getContactEmail(),
+                        order.getShippingDetails().getContactPhone(),
+                        order.getShippingDetails().getCountry(),
+                        order.getShippingDetails().getCity(),
+                        order.getShippingDetails().getStreet(),
+                        order.getShippingDetails().getZipCode(),
+                        order.getShippingDetails().getPaymentMethod()
+                ),
                 order.getCreatedAt(),
                 order.getUpdatedAt()
         );

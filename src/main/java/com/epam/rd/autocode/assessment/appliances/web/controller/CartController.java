@@ -7,14 +7,17 @@ import com.epam.rd.autocode.assessment.appliances.service.CartService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.List;
 
+@Slf4j
 @Controller
 @RequestMapping("/cart")
 @RequiredArgsConstructor
@@ -28,10 +31,14 @@ public class CartController {
             Model model) {
 
         if (principal == null) {
+            log.warn("Unauthorized attempt to access cart page");
             return "redirect:/login";
         }
 
-        List<CartResponse> carts = cartService.getAllCarts(principal.getName());
+        String email = principal.getName();
+        log.debug("Rendering cart page for user: '{}'", email);
+
+        List<CartResponse> carts = cartService.getAllCarts(email);
 
         BigDecimal totalSum = carts.stream()
                 .filter(cart -> cart.cartItems() != null)
@@ -51,54 +58,77 @@ public class CartController {
         return "cart/cart-page";
     }
 
-
     @PostMapping("/add")
-    public String addCardItem(
+    public String addCartItem(
             @Valid @ModelAttribute CartItemAddRequest request,
+            BindingResult bindingResult,
             Principal principal,
             HttpServletRequest req) {
 
         if (principal == null) {
+            log.warn("Unauthorized attempt to add appliance id={} to cart", request.applianceId());
             return "redirect:/login";
         }
 
-        CartItemAddRequest newCardAppRequest = new CartItemAddRequest(
-                principal.getName(),
+        if (bindingResult.hasErrors()) {
+            log.warn("Failed to add to cart: validation errors for user '{}'", principal.getName());
+            return getSafeReferer(req);
+        }
+
+        String email = principal.getName();
+        log.info("User '{}' adding appliance id={} (qty={}) to cart",
+                email, request.applianceId(), request.quantity());
+
+        CartItemAddRequest newCartRequest = new CartItemAddRequest(
+                email,
                 request.applianceId(),
                 request.quantity()
         );
 
-        cartService.addToCart(newCardAppRequest);
+        cartService.addToCart(newCartRequest);
 
-        return getReferer(req);
+        return getSafeReferer(req);
     }
 
     @PostMapping("/update")
     public String updateCartItemQuantity(
             @RequestParam("cartItemId") Long cartItemId,
             @RequestParam("quantity") int quantity,
+            Principal principal,
             HttpServletRequest req) {
 
+        String user = (principal != null) ? principal.getName() : "anonymous";
+
         try {
+            log.info("User '{}' updating quantity for cartItem id={} to {}", user, cartItemId, quantity);
             cartService.updateCartItemQuantity(cartItemId, quantity);
         } catch (Exception ex) {
-            return "redirect:/";
+            log.error("Failed to update cartItem id={} for user '{}': {}", cartItemId, user, ex.getMessage(), ex);
+            return "redirect:/cart?error=true";
         }
-        return getReferer(req);
+
+        return getSafeReferer(req);
     }
 
     @PostMapping("/remove")
     public String removeCartItem(
             @RequestParam("cartItemId") Long cartItemId,
+            Principal principal,
             HttpServletRequest req) {
+
+        String user = (principal != null) ? principal.getName() : "anonymous";
+        log.info("User '{}' removing cartItem id={}", user, cartItemId);
 
         cartService.deleteCartItem(cartItemId);
 
-        return getReferer(req);
+        return getSafeReferer(req);
     }
 
-    private String getReferer(HttpServletRequest req) {
+    private String getSafeReferer(HttpServletRequest req) {
         String referer = req.getHeader("Referer");
-        return "redirect:" + (referer != null ? referer : "/");
+        if (referer != null && (referer.startsWith("/") || referer.contains(req.getServerName()))) {
+            return "redirect:" + referer;
+        }
+        return "redirect:/cart";
     }
 }
