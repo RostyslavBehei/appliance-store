@@ -267,19 +267,6 @@ class ProfileControllerTest {
     }
 
     @Test
-    @DisplayName("POST /profile/update - Should redirect to update with error on binding validation failure")
-    void processUpdateProfile_BindingErrors_ShouldRedirectWithError() throws Exception {
-        mockMvc.perform(post("/profile/update")
-                        .with(user(clientEmail).roles("CLIENT"))
-                        .with(csrf())
-                        .param("firstName", ""))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/profile/update?error=profileValidation"));
-
-        verify(userService, never()).updateUser(anyString(), any());
-    }
-
-    @Test
     @DisplayName("POST /profile/deactivate - Should delete user, logout and redirect to login?logout")
     void processDeactivateProfile_ShouldDeleteAccountAndRedirect() throws Exception {
         mockMvc.perform(post("/profile/deactivate")

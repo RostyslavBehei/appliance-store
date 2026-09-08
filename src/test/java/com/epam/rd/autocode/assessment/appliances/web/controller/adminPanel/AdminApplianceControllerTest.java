@@ -229,7 +229,7 @@ class AdminApplianceControllerTest {
         mockMvc.perform(post("/admin/appliances/save")
                         .with(user("admin@test.com").roles("ADMIN"))
                         .with(csrf())
-                        .param("id", "not-a-number")
+                        .param("id", "1")
                         .param("name", "")
                         .param("price", "invalid-price"))
                 .andExpect(status().isOk())

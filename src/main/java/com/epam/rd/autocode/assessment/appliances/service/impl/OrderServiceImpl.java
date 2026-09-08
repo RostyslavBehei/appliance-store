@@ -10,6 +10,7 @@ import com.epam.rd.autocode.assessment.appliances.service.MailService;
 import com.epam.rd.autocode.assessment.appliances.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "dashboards", allEntries = true)
     public void approveOrder(Long orderId) {
         log.info("Attempting to approve order with id: {}", orderId);
 
@@ -100,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "dashboards", allEntries = true)
     public void checkout(String clientEmail, OrderCheckoutRequest request) {
         log.info("Starting checkout process for user: '{}'", clientEmail);
 

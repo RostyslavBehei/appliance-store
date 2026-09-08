@@ -10,6 +10,9 @@ import com.epam.rd.autocode.assessment.appliances.repository.ManufacturerReposit
 import com.epam.rd.autocode.assessment.appliances.service.ManufacturerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "manufacturers", key = "'names'")
     public List<String> getAllManufacturerNames() {
         log.debug("Getting all manufacturer names");
         return manufacturerRepository.findAll().stream()
@@ -38,6 +42,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "manufacturers", key = "'all'")
     public List<ManufacturerResponse> getAllManufacturer() {
         log.debug("Getting all manufacturers");
         return manufacturerRepository.findAll().stream()
@@ -47,6 +52,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "manufacturers", key = "'all'", condition = "#keyword == null || #keyword.trim().isEmpty()")
     public List<ManufacturerResponse> getAllManufacturer(String keyword) {
         log.debug("Searching manufacturers by keyword: '{}'", keyword);
         List<Manufacturer> manufacturers;
@@ -64,6 +70,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "manufacturer", key = "#manufacturerId")
     public ManufacturerResponse getManufacturerById(Long manufacturerId) {
         log.debug("Fetching manufacturer by id: '{}'", manufacturerId);
         Manufacturer manufacturer = manufacturerRepository.findById(manufacturerId)
@@ -76,6 +83,10 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "manufacturers", allEntries = true),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void createManufacturer(ManufacturerCreateRequest request) {
         log.debug("Creating manufacturer with name: '{}'", request.name());
         if (manufacturerRepository.findByName(request.name()).isPresent()) {
@@ -96,6 +107,7 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "manufacturers", allEntries = true)
     public void updateManufacturer(ManufacturerUpdateRequest request) {
         log.info("Updating manufacturer with id: '{}', name: '{}'", request.id(), request.name());
         Manufacturer manufacturer = manufacturerRepository.findById(request.id())
@@ -120,6 +132,10 @@ public class ManufacturerServiceImpl implements ManufacturerService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "manufacturers", allEntries = true),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void deleteManufacturerById(Long manufacturerId) {
         log.info("Attempting to delete manufacturer with id: {}", manufacturerId);
 

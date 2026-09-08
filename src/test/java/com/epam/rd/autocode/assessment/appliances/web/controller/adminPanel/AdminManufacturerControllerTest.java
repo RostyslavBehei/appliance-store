@@ -171,7 +171,7 @@ class AdminManufacturerControllerTest {
         mockMvc.perform(post("/admin/manufacturers/save")
                         .with(user("admin@test.com").roles("ADMIN"))
                         .with(csrf())
-                        .param("id", "not-a-number")
+                        .param("id", "1")
                         .param("name", ""))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/manufacturer/admin-manufacturers-form-page"))

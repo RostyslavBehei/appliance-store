@@ -10,6 +10,7 @@ import com.epam.rd.autocode.assessment.appliances.repository.ManufacturerReposit
 import com.epam.rd.autocode.assessment.appliances.repository.OrderRepository;
 import com.epam.rd.autocode.assessment.appliances.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,6 +33,7 @@ public class DashboardServiceImpl {
     private final ManufacturerRepository manufacturerRepository;
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "dashboards", key = "'admin'")
     public DashboardAdminResponse getDashboardAdminResponse() {
         Long revenueObj = orderRepository.calculateTotalRevenue(
                 YearMonth.now().atDay(1).atStartOfDay(),
@@ -76,6 +78,7 @@ public class DashboardServiceImpl {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "dashboards", key = "'employee'")
     public DashboardEmployeeResponse getDashboardEmployeeResponse() {
         long pendingOrdersCount = orderRepository.countByApproved(false);
         long approvedOrdersCount = orderRepository.countByApproved(true);

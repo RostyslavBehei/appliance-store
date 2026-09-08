@@ -18,6 +18,9 @@ import com.epam.rd.autocode.assessment.appliances.service.VerificationTokenServi
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.Authentication;
@@ -49,6 +52,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "users", key = "#userEmail")
     public UserProfileResponse getUserByEmail(String userEmail) {
         log.debug("Fetching profile for user: '{}'", userEmail);
 
@@ -74,6 +78,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#userEmail"),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void updateUser(String userEmail, UserProfileUpdateRequest request) {
         log.info("Updating user profile for email: '{}'", userEmail);
 
@@ -197,6 +205,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "users", key = "#currentEmail")
     public void updateEmail(String currentEmail, UserEmailChangeRequest request) {
         log.info("Attempting email change from '{}' to '{}'", currentEmail, request.newEmail());
 
@@ -229,6 +238,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void verifyAccount(String token) {
         log.info("Attempting account verification via token");
 
@@ -248,6 +261,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void deleteUserById(Long id) {
         log.info("Attempting to delete user by id: {}", id);
 
@@ -259,19 +276,33 @@ public class UserServiceImpl implements UserService {
                     );
                 });
 
-        userRepository.delete(user);
+        deleteUserEntity(user);
         log.info("User with id {} successfully deleted", id);
     }
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "users", allEntries = true),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void deleteUserByEmail(String email) {
         log.info("Attempting to delete user by email: '{}'", email);
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> {
+                    log.warn("Failed to delete: User with email '{}' not found", email);
+                    return new NotFoundException(
+                            messageSource.getMessage("error.user.not.found", new Object[]{email}, getLocale())
+                    );
+                });
 
-        if (user instanceof Client client) {
+        deleteUserEntity(user);
+        log.info("User with email '{}' successfully deleted", email);
+    }
+
+    private void deleteUserEntity(User user) {
+        if (cartRepository != null && user instanceof Client client) {
             log.debug("Deleting shopping cart for client id: {}", client.getId());
             cartRepository.deleteByClient(client);
         }
@@ -281,7 +312,6 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.delete(user);
-        log.info("User with email '{}' and id {} deleted successfully", email, user.getId());
     }
 
     private Locale getLocale() {

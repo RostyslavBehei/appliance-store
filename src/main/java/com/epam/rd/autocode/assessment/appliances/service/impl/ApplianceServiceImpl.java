@@ -13,6 +13,9 @@ import com.epam.rd.autocode.assessment.appliances.repository.ManufacturerReposit
 import com.epam.rd.autocode.assessment.appliances.service.ApplianceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -69,6 +72,7 @@ public class ApplianceServiceImpl implements ApplianceService {
 
     @Override
     @Transactional(readOnly = true)
+    @Cacheable(value = "appliances", key = "#id")
     public ApplianceResponse getApplianceById(Long id) {
         log.debug("Fetching appliance by ID: {}", id);
         Appliance appliance = applianceRepository.findById(id)
@@ -82,6 +86,10 @@ public class ApplianceServiceImpl implements ApplianceService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "appliances", key = "#request.id()", condition = "#request.id() != null"),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void updateAppliance(ApplianceUpdateRequest request) {
         if (request == null) {
             throw new IllegalArgumentException("ApplianceUpdateRequest must not be null");
@@ -129,6 +137,10 @@ public class ApplianceServiceImpl implements ApplianceService {
 
     @Override
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "appliances", key = "#applianceId"),
+            @CacheEvict(value = "dashboards", allEntries = true)
+    })
     public void deleteApplianceById(Long applianceId) {
         log.info("Attempting to delete appliance with id: '{}'", applianceId);
 

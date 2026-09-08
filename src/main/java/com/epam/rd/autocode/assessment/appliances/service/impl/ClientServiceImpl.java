@@ -17,6 +17,7 @@ import com.epam.rd.autocode.assessment.appliances.service.VerificationTokenServi
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
@@ -82,6 +83,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "dashboards", allEntries = true)
     public void saveClient(ClientUpdateRequest request) {
         boolean isNew = request.id() == null;
         Client client;
